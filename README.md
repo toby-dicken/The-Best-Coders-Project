@@ -1,2 +1,2 @@
 # The-Best-Coders-Project
-Project for collaborative development 2026
+Business analyst ideas for our project
