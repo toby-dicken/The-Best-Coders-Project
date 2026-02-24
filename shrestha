@@ -1,0 +1,9 @@
+Hi everyone,
+
+I just noticed that we currently don’t have a registration page in our application. Since new users need a way to create accounts, I think we should add a registration page to the system.
+
+Also, because the platform is intended only for students of the University of Wolverhampton, we should include a restriction during registration. For example, we could allow sign-up only with official university email addresses (such as emails ending with @student.wlv.ac.uk) and add email verification to ensure only real students can register.
+
+This would make the system more secure and ensure that only authorized users can access it.
+
+Let me know what you think.
