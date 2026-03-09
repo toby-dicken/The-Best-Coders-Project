@@ -11,168 +11,172 @@
 
 <!-- LANGUAGE SELECT -->
 <div style="text-align:right; padding:10px;">
-<select onchange="translatePage(this.value)">
-<option value="en">English</option>
-<option value="es">Spanish</option>
-<option value="fr">French</option>
-<option value="de">German</option>
-<option value="zh">Chinese</option>
-<option value="ar">Arabic</option>
-</select>
+  <label for="languageSelect" class="visually-hidden">Select Language</label>
+  <select id="languageSelect" onchange="setLanguage(this.value)">
+    <option value="en">English</option>
+    <option value="es">Spanish</option>
+    <option value="fr">French</option>
+    <option value="de">German</option>
+    <option value="zh">Chinese</option>
+    <option value="ar">Arabic</option>
+  </select>
 </div>
 
 <!-- NAVIGATION -->
 <nav class="navbar">
-<div class="logo">WLV</div>
-
-<div class="nav-links">
-<a href="main.html" id="navHome">Home</a>
-<a href="courses.html" id="navCourses">Courses</a>
-<a href="students.html" id="navStudents">Students</a>
-<a href="support.html" id="navSupport">Support</a>
-</div>
-
-<form class="search-box">
-<input type="text" id="searchInput" placeholder="Search...">
-<button type="submit" id="searchBtn">Search</button>
-</form>
+  <div class="logo">WLV</div>
+  <div class="nav-links">
+    <a href="main.html" id="navHome">Home</a>
+    <a href="courses.html" id="navCourses">Courses</a>
+    <a href="students.html" id="navStudents">Students</a>
+    <a href="support.html" id="navSupport">Support</a>
+  </div>
+  <form class="search-box">
+    <input type="text" id="searchInput" placeholder="Search...">
+    <button type="submit" id="searchBtn">Search</button>
+  </form>
 </nav>
 
 <!-- HERO SECTION -->
 <section class="hero">
-<h1 id="welcome">Welcome to WLV Web Page</h1>
-<p id="subtitle">Professional responsive website</p>
+  <h1 id="welcome">Welcome to WLV Web Page</h1>
+  <p id="subtitle">Professional responsive website</p>
 </section>
 
 <!-- SERVICES CARDS -->
 <section class="section">
-<h2 id="servicesTitle">Our Services</h2>
+  <h2 id="servicesTitle">Our Services</h2>
+  <div class="cards">
+    <a href="courses(MR).html" class="card-link">
+      <div class="card">
+        <h3 id="courseTitle">Courses</h3>
+        <p id="courseDesc">High quality academic courses.</p>
+      </div>
+    </a>
 
-<div class="cards">
+    <a href="students(MR).html" class="card-link">
+      <div class="card">
+        <h3 id="studentTitle">Students</h3>
+        <p id="studentDesc">Student dashboard & profiles.</p>
+      </div>
+    </a>
 
-<a href="courses(MR).html" class="card-link">
-<div class="card">
-<h3 id="courseTitle">Courses</h3>
-<p id="courseDesc">High quality academic courses.</p>
-</div>
-</a>
+    <a href="library(MR).html" class="card-link">
+      <div class="card">
+        <h3 id="libraryTitle">Library</h3>
+        <p id="libraryDesc">Digital resources & materials.</p>
+      </div>
+    </a>
 
-<a href="students(MR).html" class="card-link">
-<div class="card">
-<h3 id="studentTitle">Students</h3>
-<p id="studentDesc">Student dashboard & profiles.</p>
-</div>
-</a>
-
-<a href="library(MR).html" class="card-link">
-<div class="card">
-<h3 id="libraryTitle">Library</h3>
-<p id="libraryDesc">Digital resources & materials.</p>
-</div>
-</a>
-
-<a href="support(MR).html" class="card-link">
-<div class="card">
-<h3 id="supportTitle">Support</h3>
-<p id="supportDesc">24/7 help & assistance.</p>
-</div>
-</a>
-
-</div>
+    <a href="support(MR).html" class="card-link">
+      <div class="card">
+        <h3 id="supportTitle">Support</h3>
+        <p id="supportDesc">24/7 help & assistance.</p>
+      </div>
+    </a>
+  </div>
 </section>
 
 <!-- FOOTER -->
 <footer>
-<p id="footerText">© 2026 WLV Web Page | All Rights Reserved</p>
+  <p id="footerText">© 2026 WLV Web Page | All Rights Reserved</p>
 </footer>
 
 <script>
+// --- TRANSLATION DICTIONARY ---
+const translations = {
+  en: {
+    navHome: "Home", navCourses: "Courses", navStudents: "Students", navSupport: "Support",
+    searchInput: "Search...", searchBtn: "Search",
+    welcome: "Welcome to WLV Web Page", subtitle: "Professional responsive website",
+    servicesTitle: "Our Services",
+    courseTitle: "Courses", courseDesc: "High quality academic courses.",
+    studentTitle: "Students", studentDesc: "Student dashboard & profiles.",
+    libraryTitle: "Library", libraryDesc: "Digital resources & materials.",
+    supportTitle: "Support", supportDesc: "24/7 help & assistance.",
+    footerText: "© 2026 WLV Web Page | All Rights Reserved"
+  },
+  es: {
+    navHome: "Inicio", navCourses: "Cursos", navStudents: "Estudiantes", navSupport: "Soporte",
+    searchInput: "Buscar...", searchBtn: "Buscar",
+    welcome: "Bienvenido a la página web WLV", subtitle: "Sitio web profesional adaptable",
+    servicesTitle: "Nuestros Servicios",
+    courseTitle: "Cursos", courseDesc: "Cursos académicos de alta calidad",
+    studentTitle: "Estudiantes", studentDesc: "Panel y perfiles de estudiantes",
+    libraryTitle: "Biblioteca", libraryDesc: "Recursos y materiales digitales",
+    supportTitle: "Soporte", supportDesc: "Ayuda 24/7",
+    footerText: "© 2026 Página Web WLV | Todos los derechos reservados"
+  },
+  fr: {
+    navHome: "Accueil", navCourses: "Cours", navStudents: "Étudiants", navSupport: "Support",
+    searchInput: "Recherche...", searchBtn: "Rechercher",
+    welcome: "Bienvenue sur la page Web WLV", subtitle: "Site web professionnel responsive",
+    servicesTitle: "Nos Services",
+    courseTitle: "Cours", courseDesc: "Cours académiques de haute qualité",
+    studentTitle: "Étudiants", studentDesc: "Tableau de bord et profils étudiants",
+    libraryTitle: "Bibliothèque", libraryDesc: "Ressources numériques",
+    supportTitle: "Support", supportDesc: "Assistance 24h/24",
+    footerText: "© 2026 Page Web WLV | Tous droits réservés"
+  },
+  de: {
+    navHome: "Startseite", navCourses: "Kurse", navStudents: "Studenten", navSupport: "Support",
+    searchInput: "Suchen...", searchBtn: "Suchen",
+    welcome: "Willkommen auf der WLV Webseite", subtitle: "Professionelle responsive Website",
+    servicesTitle: "Unsere Dienstleistungen",
+    courseTitle: "Kurse", courseDesc: "Hochwertige akademische Kurse",
+    studentTitle: "Studenten", studentDesc: "Dashboard & Profile der Studenten",
+    libraryTitle: "Bibliothek", libraryDesc: "Digitale Ressourcen & Materialien",
+    supportTitle: "Support", supportDesc: "24/7 Hilfe & Unterstützung",
+    footerText: "© 2026 WLV Webseite | Alle Rechte vorbehalten"
+  },
+  zh: {
+    navHome: "首页", navCourses: "课程", navStudents: "学生", navSupport: "支持",
+    searchInput: "搜索...", searchBtn: "搜索",
+    welcome: "欢迎来到 WLV 网站", subtitle: "专业响应式网站",
+    servicesTitle: "我们的服务",
+    courseTitle: "课程", courseDesc: "高质量学术课程",
+    studentTitle: "学生", studentDesc: "学生仪表盘和个人资料",
+    libraryTitle: "图书馆", libraryDesc: "数字资源和资料",
+    supportTitle: "支持", supportDesc: "24/7 帮助与支持",
+    footerText: "© 2026 WLV 网站 | 版权所有"
+  },
+  ar: {
+    navHome: "الرئيسية", navCourses: "الدورات", navStudents: "الطلاب", navSupport: "الدعم",
+    searchInput: "بحث...", searchBtn: "بحث",
+    welcome: "مرحبًا بكم في موقع WLV", subtitle: "موقع احترافي متجاوب",
+    servicesTitle: "خدماتنا",
+    courseTitle: "الدورات", courseDesc: "دورات أكاديمية عالية الجودة",
+    studentTitle: "الطلاب", studentDesc: "لوحة الطلاب والملفات الشخصية",
+    libraryTitle: "المكتبة", libraryDesc: "الموارد والمواد الرقمية",
+    supportTitle: "الدعم", supportDesc: "مساعدة ودعم على مدار الساعة",
+    footerText: "© 2026 موقع WLV | جميع الحقوق محفوظة"
+  }
+};
 
+// --- TRANSLATION FUNCTION ---
 function translatePage(lang){
-
-if(lang=="es"){
-navHome.innerHTML="Inicio"
-navCourses.innerHTML="Cursos"
-navStudents.innerHTML="Estudiantes"
-navSupport.innerHTML="Soporte"
-searchInput.placeholder="Buscar..."
-searchBtn.innerHTML="Buscar"
-welcome.innerHTML="Bienvenido a la página web WLV"
-subtitle.innerHTML="Sitio web profesional adaptable"
-servicesTitle.innerHTML="Nuestros Servicios"
-courseTitle.innerHTML="Cursos"
-courseDesc.innerHTML="Cursos académicos de alta calidad"
-studentTitle.innerHTML="Estudiantes"
-studentDesc.innerHTML="Panel y perfiles de estudiantes"
-libraryTitle.innerHTML="Biblioteca"
-libraryDesc.innerHTML="Recursos y materiales digitales"
-supportTitle.innerHTML="Soporte"
-supportDesc.innerHTML="Ayuda 24/7"
-footerText.innerHTML="© 2026 Página Web WLV | Todos los derechos reservados"
+  document.documentElement.lang = lang;
+  document.body.dir = (lang === "ar") ? "rtl" : "ltr";
+  const t = translations[lang];
+  for (let id in t) {
+    const el = document.getElementById(id);
+    if(el) el.innerHTML = t[id];
+    if(id === "searchInput" && el) el.placeholder = t[id]; // input placeholder
+  }
 }
 
-else if(lang=="fr"){
-navHome.innerHTML="Accueil"
-navCourses.innerHTML="Cours"
-navStudents.innerHTML="Étudiants"
-navSupport.innerHTML="Support"
-searchInput.placeholder="Recherche..."
-searchBtn.innerHTML="Rechercher"
-welcome.innerHTML="Bienvenue sur la page Web WLV"
-subtitle.innerHTML="Site web professionnel responsive"
-servicesTitle.innerHTML="Nos Services"
-courseTitle.innerHTML="Cours"
-courseDesc.innerHTML="Cours académiques de haute qualité"
-studentTitle.innerHTML="Étudiants"
-studentDesc.innerHTML="Tableau de bord et profils étudiants"
-libraryTitle.innerHTML="Bibliothèque"
-libraryDesc.innerHTML="Ressources numériques"
-supportTitle.innerHTML="Support"
-supportDesc.innerHTML="Assistance 24h/24"
+// --- SET LANGUAGE ---
+function setLanguage(lang){
+  localStorage.setItem("selectedLanguage", lang);
+  translatePage(lang);
 }
 
-else if(lang=="de"){
-navHome.innerHTML="Startseite"
-navCourses.innerHTML="Kurse"
-navStudents.innerHTML="Studenten"
-navSupport.innerHTML="Support"
-searchInput.placeholder="Suchen..."
-searchBtn.innerHTML="Suchen"
-welcome.innerHTML="Willkommen auf der WLV Webseite"
-subtitle.innerHTML="Professionelle responsive Website"
-servicesTitle.innerHTML="Unsere Dienstleistungen"
+// --- APPLY SAVED LANGUAGE ON LOAD ---
+window.onload = function(){
+  const savedLang = localStorage.getItem("selectedLanguage") || "en";
+  document.getElementById("languageSelect").value = savedLang;
+  translatePage(savedLang);
 }
-
-else if(lang=="zh"){
-navHome.innerHTML="首页"
-navCourses.innerHTML="课程"
-navStudents.innerHTML="学生"
-navSupport.innerHTML="支持"
-searchInput.placeholder="搜索..."
-searchBtn.innerHTML="搜索"
-welcome.innerHTML="欢迎来到 WLV 网站"
-subtitle.innerHTML="专业响应式网站"
-servicesTitle.innerHTML="我们的服务"
-}
-
-else if(lang=="ar"){
-navHome.innerHTML="الرئيسية"
-navCourses.innerHTML="الدورات"
-navStudents.innerHTML="الطلاب"
-navSupport.innerHTML="الدعم"
-searchInput.placeholder="بحث..."
-searchBtn.innerHTML="بحث"
-welcome.innerHTML="مرحبًا بكم في موقع WLV"
-subtitle.innerHTML="موقع احترافي متجاوب"
-servicesTitle.innerHTML="خدماتنا"
-}
-
-else{
-location.reload()
-}
-
-}
-
 </script>
 
 </body>
