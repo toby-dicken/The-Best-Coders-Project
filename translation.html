@@ -18,63 +18,62 @@
     <option value="de">German</option>
     <option value="zh">Chinese</option>
     <option value="ar">Arabic</option>
+    <option value="ne">Nepali</option>
   </select>
 </div>
 
 <!-- NAVIGATION -->
 <nav class="navbar">
-<div class="logo">WLV</div>
+  <div class="logo">WLV</div>
 
-<div class="nav-links">
-<a href="main.html" id="navHome">Home</a>
-<a href="courses.html" id="navCourses">Courses</a>
-<a href="students.html" id="navStudents">Students</a>
-<a href="support.html" id="navSupport">Support</a>
-</div>
+  <div class="nav-links">
+    <a href="main(MR).html" id="navHome">Home</a>
+    <a href="courses(MR).html" id="navCourses">Courses</a>
+    <a href="students(MR).html" id="navStudents">Students</a>
+    <a href="support(MR).html" id="navSupport">Support</a>
+  </div>
 
-<form class="search-box">
-<input type="text" id="searchInput" placeholder="Search...">
-<button type="submit" id="searchBtn">Search</button>
-</form>
+  <form class="search-box">
+    <input type="text" id="searchInput" placeholder="Search...">
+    <button type="submit" id="searchBtn">Search</button>
+  </form>
 </nav>
 
 <!-- HERO -->
 <section class="hero">
-<h1 id="welcome">Welcome to WLV Web Page</h1>
-<p id="subtitle">Professional responsive website</p>
+  <h1 id="welcome">Welcome to WLV Web Page</h1>
+  <p id="subtitle">Professional responsive website</p>
 </section>
 
 <!-- SERVICES -->
 <section class="section">
-<h2 id="servicesTitle">Our Services</h2>
+  <h2 id="servicesTitle">Our Services</h2>
 
-<div class="cards">
+  <div class="cards">
+    <div class="card">
+      <h3 id="courseTitle">Courses</h3>
+      <p id="courseDesc">High quality academic courses.</p>
+    </div>
 
-<div class="card">
-<h3 id="courseTitle">Courses</h3>
-<p id="courseDesc">High quality academic courses.</p>
-</div>
+    <div class="card">
+      <h3 id="studentTitle">Students</h3>
+      <p id="studentDesc">Student dashboard & profiles.</p>
+    </div>
 
-<div class="card">
-<h3 id="studentTitle">Students</h3>
-<p id="studentDesc">Student dashboard & profiles.</p>
-</div>
+    <div class="card">
+      <h3 id="libraryTitle">Library</h3>
+      <p id="libraryDesc">Digital resources & materials.</p>
+    </div>
 
-<div class="card">
-<h3 id="libraryTitle">Library</h3>
-<p id="libraryDesc">Digital resources & materials.</p>
-</div>
-
-<div class="card">
-<h3 id="supportTitle">Support</h3>
-<p id="supportDesc">24/7 help & assistance.</p>
-</div>
-
-</div>
+    <div class="card">
+      <h3 id="supportTitle">Support</h3>
+      <p id="supportDesc">24/7 help & assistance.</p>
+    </div>
+  </div>
 </section>
 
 <footer>
-<p id="footerText">© 2026 WLV Web Page | All Rights Reserved</p>
+  <p id="footerText">© 2026 WLV Web Page | All Rights Reserved</p>
 </footer>
 
 <script>
@@ -185,6 +184,46 @@ function translatePage(lang){
     supportTitle.innerHTML="الدعم"
     supportDesc.innerHTML="مساعدة على مدار الساعة"
     footerText.innerHTML="© 2026 موقع WLV | جميع الحقوق محفوظة"
+  }
+  else if(lang=="ne"){ // Nepali
+    navHome.innerHTML="घर"
+    navCourses.innerHTML="पाठ्यक्रम"
+    navStudents.innerHTML="विद्यार्थी"
+    navSupport.innerHTML="समर्थन"
+    searchInput.placeholder="खोज्नुहोस्..."
+    searchBtn.innerHTML="खोज्नुहोस्"
+    welcome.innerHTML="WLV वेब पृष्ठमा स्वागत छ"
+    subtitle.innerHTML="व्यावसायिक र प्रतिक्रियाशील वेबसाइट"
+    servicesTitle.innerHTML="हाम्रा सेवाहरू"
+    courseTitle.innerHTML="पाठ्यक्रम"
+    courseDesc.innerHTML="उच्च गुणस्तरको शैक्षिक पाठ्यक्रम।"
+    studentTitle.innerHTML="विद्यार्थी"
+    studentDesc.innerHTML="विद्यार्थी ड्यासबोर्ड र प्रोफाइल।"
+    libraryTitle.innerHTML="पुस्तकालय"
+    libraryDesc.innerHTML="डिजिटल स्रोतहरू र सामग्री।"
+    supportTitle.innerHTML="समर्थन"
+    supportDesc.innerHTML="२४/७ सहायता र सहयोग।"
+    footerText.innerHTML="© 2026 WLV वेब पृष्ठ | सबै अधिकार सुरक्षित"
+  }
+  else{ // Default English
+    navHome.innerHTML="Home"
+    navCourses.innerHTML="Courses"
+    navStudents.innerHTML="Students"
+    navSupport.innerHTML="Support"
+    searchInput.placeholder="Search..."
+    searchBtn.innerHTML="Search"
+    welcome.innerHTML="Welcome to WLV Web Page"
+    subtitle.innerHTML="Professional responsive website"
+    servicesTitle.innerHTML="Our Services"
+    courseTitle.innerHTML="Courses"
+    courseDesc.innerHTML="High quality academic courses."
+    studentTitle.innerHTML="Students"
+    studentDesc.innerHTML="Student dashboard & profiles."
+    libraryTitle.innerHTML="Library"
+    libraryDesc.innerHTML="Digital resources & materials."
+    supportTitle.innerHTML="Support"
+    supportDesc.innerHTML="24/7 help & assistance."
+    footerText.innerHTML="© 2026 WLV Web Page | All Rights Reserved"
   }
 }
 
