@@ -29,7 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $_SESSION["UserID"] = $user["UserID"];
                 $_SESSION["email"] = $user["email"];
 
-                header("Location: main.php");
+                header("Location: main(NS).php");
                 exit;
 
             } else {
