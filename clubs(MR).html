@@ -214,39 +214,130 @@ window.onclick = function(event){
 
 // MULTI-LANGUAGE
 const translations = {
-en:{
-clubTitle:"Campus Clubs Connector",
-clubSubtitle:"Explore and apply for student clubs.",
-sportTitle:"Sports Club",
-sportDesc:"Join football, basketball and other sports.",
-techTitle:"Tech Club",
-techDesc:"Programming, robotics and innovation.",
-cultureTitle:"Cultural Club",
-cultureDesc:"Celebrate international cultures.",
-applyTitle:"Apply for a Club",
-nameLabel:"Full Name",
-idLabel:"Student ID",
-emailLabel:"Email",
-clubLabel:"Select Club",
-submitBtn:"Submit Application",
-footerText:"© 2026 WLV Web Page | All Rights Reserved"
-},
-ne:{
-clubTitle:"क्याम्पस क्लब कनेक्टर",
-clubSubtitle:"विद्यार्थी क्लबहरू अन्वेषण गर्नुहोस् र आवेदन दिनुहोस्।",
-sportTitle:"खेलकुद क्लब",
-sportDesc:"फुटबल, बास्केटबल र अन्य खेलहरूमा सहभागी हुनुहोस्।",
-techTitle:"टेक क्लब",
-techDesc:"प्रोग्रामिङ, रोबोटिक्स र प्रविधि।",
-cultureTitle:"सांस्कृतिक क्लब",
-cultureDesc:"अन्तर्राष्ट्रिय संस्कृतिहरू मनाउनुहोस्।",
-applyTitle:"क्लबको लागि आवेदन दिनुहोस्",
-nameLabel:"पूरा नाम",
-idLabel:"विद्यार्थी आईडी",
-emailLabel:"इमेल",
-clubLabel:"क्लब छान्नुहोस्",
-submitBtn:"आवेदन पठाउनुहोस्"
-}
+  en:{
+    clubTitle:"Campus Clubs Connector",
+    clubSubtitle:"Explore and apply for student clubs.",
+    sportTitle:"Sports Club",
+    sportDesc:"Join football, basketball and other sports.",
+    techTitle:"Tech Club",
+    techDesc:"Programming, robotics and innovation.",
+    cultureTitle:"Cultural Club",
+    cultureDesc:"Celebrate international cultures.",
+    applyTitle:"Apply for a Club",
+    nameLabel:"Full Name",
+    idLabel:"Student ID",
+    emailLabel:"Email",
+    clubLabel:"Select Club",
+    submitBtn:"Submit Application",
+    footerText:"© 2026 WLV Web Page | All Rights Reserved"
+  },
+
+  es:{
+    clubTitle:"Conector de Clubes del Campus",
+    clubSubtitle:"Explora y solicita clubes estudiantiles.",
+    sportTitle:"Club Deportivo",
+    sportDesc:"Únete a fútbol, baloncesto y otros deportes.",
+    techTitle:"Club Tecnológico",
+    techDesc:"Programación, robótica e innovación.",
+    cultureTitle:"Club Cultural",
+    cultureDesc:"Celebra culturas internacionales.",
+    applyTitle:"Solicitar un Club",
+    nameLabel:"Nombre Completo",
+    idLabel:"ID de Estudiante",
+    emailLabel:"Correo Electrónico",
+    clubLabel:"Seleccionar Club",
+    submitBtn:"Enviar Solicitud",
+    footerText:"© 2026 Página Web WLV | Todos los Derechos Reservados"
+  },
+
+  fr:{
+    clubTitle:"Connecteur des Clubs du Campus",
+    clubSubtitle:"Explorez et postulez aux clubs étudiants.",
+    sportTitle:"Club de Sport",
+    sportDesc:"Rejoignez le football, le basketball et d'autres sports.",
+    techTitle:"Club Tech",
+    techDesc:"Programmation, robotique et innovation.",
+    cultureTitle:"Club Culturel",
+    cultureDesc:"Célébrez les cultures internationales.",
+    applyTitle:"Postuler à un Club",
+    nameLabel:"Nom Complet",
+    idLabel:"ID Étudiant",
+    emailLabel:"Email",
+    clubLabel:"Sélectionner un Club",
+    submitBtn:"Soumettre la Candidature",
+    footerText:"© 2026 Page Web WLV | Tous Droits Réservés"
+  },
+
+  de:{
+    clubTitle:"Campus Club Connector",
+    clubSubtitle:"Entdecke und bewirb dich für Studentenclubs.",
+    sportTitle:"Sportclub",
+    sportDesc:"Mach mit bei Fußball, Basketball und anderen Sportarten.",
+    techTitle:"Tech-Club",
+    techDesc:"Programmierung, Robotik und Innovation.",
+    cultureTitle:"Kulturclub",
+    cultureDesc:"Internationale Kulturen feiern.",
+    applyTitle:"Für einen Club Bewerben",
+    nameLabel:"Vollständiger Name",
+    idLabel:"Studentenausweis",
+    emailLabel:"E-Mail",
+    clubLabel:"Club Auswählen",
+    submitBtn:"Bewerbung Absenden",
+    footerText:"© 2026 WLV-Webseite | Alle Rechte Vorbehalten"
+  },
+
+  zh:{
+    clubTitle:"校园俱乐部连接器",
+    clubSubtitle:"探索并申请学生俱乐部。",
+    sportTitle:"体育俱乐部",
+    sportDesc:"加入足球、篮球等运动项目。",
+    techTitle:"科技俱乐部",
+    techDesc:"编程、机器人与创新。",
+    cultureTitle:"文化俱乐部",
+    cultureDesc:"庆祝国际文化。",
+    applyTitle:"申请加入俱乐部",
+    nameLabel:"姓名",
+    idLabel:"学生证号",
+    emailLabel:"电子邮件",
+    clubLabel:"选择俱乐部",
+    submitBtn:"提交申请",
+    footerText:"© 2026 WLV 网页 | 版权所有"
+  },
+
+  ar:{
+    clubTitle:"موصل أندية الحرم الجامعي",
+    clubSubtitle:"استكشف وتقدم إلى الأندية الطلابية.",
+    sportTitle:"النادي الرياضي",
+    sportDesc:"انضم إلى كرة القدم، كرة السلة وغيرها.",
+    techTitle:"نادي التكنولوجيا",
+    techDesc:"برمجة، روبوتات وابتكار.",
+    cultureTitle:"النادي الثقافي",
+    cultureDesc:"الاحتفال بالثقافات الدولية.",
+    applyTitle:"التقديم إلى نادٍ",
+    nameLabel:"الاسم الكامل",
+    idLabel:"رقم الطالب",
+    emailLabel:"البريد الإلكتروني",
+    clubLabel:"اختر النادي",
+    submitBtn:"إرسال الطلب",
+    footerText:"© 2026 صفحة ويب WLV | جميع الحقوق محفوظة"
+  },
+
+  ne:{
+    clubTitle:"क्याम्पस क्लब कनेक्टर",
+    clubSubtitle:"विद्यार्थी क्लबहरू अन्वेषण गर्नुहोस् र आवेदन दिनुहोस्।",
+    sportTitle:"खेलकुद क्लब",
+    sportDesc:"फुटबल, बास्केटबल र अन्य खेलहरूमा सहभागी हुनुहोस्।",
+    techTitle:"टेक क्लब",
+    techDesc:"प्रोग्रामिङ, रोबोटिक्स र प्रविधि।",
+    cultureTitle:"सांस्कृतिक क्लब",
+    cultureDesc:"अन्तर्राष्ट्रिय संस्कृतिहरू मनाउनुहोस्।",
+    applyTitle:"क्लबको लागि आवेदन दिनुहोस्",
+    nameLabel:"पूरा नाम",
+    idLabel:"विद्यार्थी आईडी",
+    emailLabel:"इमेल",
+    clubLabel:"क्लब छान्नुहोस्",
+    submitBtn:"आवेदन पठाउनुहोस्"
+  }
 };
 
 function translatePage(lang){
