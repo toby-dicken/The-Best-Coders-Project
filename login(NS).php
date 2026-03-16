@@ -83,6 +83,7 @@ if ($error != "") {
 <input type="password" name="password" placeholder="Password" required><br><br>
 
 <input type="submit" value="Login" class="btn"><br><br>
+<p>Don't have an account? <a href="Create_acc_page(NS).php">Register here</a></p>
 
 </form>
 

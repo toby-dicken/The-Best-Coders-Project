@@ -3,6 +3,7 @@ session_start();
 include("db.php");
 
 $success = "";
+$error = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
@@ -13,12 +14,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (!empty($name) && !empty($email) && !empty($subject) && !empty($message)) {
 
-        $stmt = $mysqli->prepare("INSERT INTO ContactMessages (FullName, Email, Subject, Message) VALUES (?, ?, ?, ?)");
-        $stmt->bind_param("ssss", $name, $email, $subject, $message);
-        $stmt->execute();
-        $stmt->close();
+        if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
 
-        $success = "Message sent successfully!";
+            $stmt = $mysqli->prepare("INSERT INTO ContactMessages (FullName, Email, Subject, Message) VALUES (?, ?, ?, ?)");
+            $stmt->bind_param("ssss", $name, $email, $subject, $message);
+            $stmt->execute();
+            $stmt->close();
+
+            $success = "Message sent successfully!";
+
+        } else {
+
+            $error = "Invalid email address.";
+
+        }
+
+    } else {
+
+        $error = "Please fill in all fields.";
+
     }
 }
 ?>
@@ -43,7 +57,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </div>
 </nav>
 
-
 <section class="section">
 
 <h1>Contact Us</h1>
@@ -52,6 +65,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <?php
 if ($success != "") {
 echo "<p style='color:green;'>$success</p>";
+}
+
+if ($error != "") {
+echo "<p style='color:red;'>$error</p>";
 }
 ?>
 

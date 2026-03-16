@@ -77,7 +77,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </form>
 
             <p class="mt-3 text-center">
-                Already have an account? <a href="login.php">Login</a>
+                Already have an account? <a href="login(NS).php">Login</a>
             </p>
         </div>
     </div>

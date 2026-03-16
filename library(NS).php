@@ -42,10 +42,9 @@ if (isset($_GET["search"])) {
 <div class="logo">WLV Library</div>
 
 <div class="nav-links">
-<a href="main.php">Home</a>
-<a href="courses.php">Courses</a>
-<a href="students.php">Students</a>
-<a href="support.php">Support</a>
+<a href="main(NS).php">Home</a>
+<a href="courses(NS).php">Courses</a>
+<a href="support(NS).php">Support</a>
 <a href="logout.php">Logout</a>
 </div>
 
