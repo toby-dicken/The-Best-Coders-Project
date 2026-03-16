@@ -115,7 +115,7 @@ $message="You already checked in today";
 <nav class="navbar">
 
 <div class="logo">
-WLV | <?php echo $user["FullName"]; ?>
+WLV | <?php echo $user["email"]; ?>
 </div>
 
 <div class="nav-links">

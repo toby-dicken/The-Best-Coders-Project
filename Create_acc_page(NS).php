@@ -43,9 +43,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <html>
 <head>
     <title>Register</title>
+    <link rel="stylesheet" href="login.css">
 </head>
 
 <body>
+    <div>
+<img src="img/University-of-Wolverhampton.png" alt="University of Wolverhampton Logo" class="logo" width="200" height="100"><br>
+</div>
+
 <div>
     <div>
         <div>

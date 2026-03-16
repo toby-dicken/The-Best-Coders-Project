@@ -50,10 +50,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <div class="logo">WLV</div>
 
 <div class="nav-links">
-<a href="main.php">Home</a>
-<a href="courses.html">Courses</a>
-<a href="students.html">Students</a>
-<a href="contact.php">Contact</a>
+<a href="main(NS).php">Home</a>
+<a href="courses(NS).php">Courses</a>
+<a href="contact(NS).php">Contact</a>
 </div>
 </nav>
 
