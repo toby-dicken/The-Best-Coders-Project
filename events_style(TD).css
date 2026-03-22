@@ -1,0 +1,79 @@
+/* EVENTS TABLE */
+h2 {
+    text-align: center;
+    margin: 40px 0 20px;
+    color: #1f2937;
+    font-size: 28px;
+}
+
+table {
+    width: 90%;
+    max-width: 900px;
+    margin: 0 auto 60px;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+thead {
+    background: #38bdf8;
+    color: white;
+    text-align: left;
+}
+
+thead th {
+    padding: 15px 20px;
+    font-weight: 600;
+}
+
+tbody td {
+    padding: 12px 20px;
+    border-bottom: 1px solid #e5e7eb;
+    color: #374151;
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+tbody tr:hover {
+    background: #f0f9ff;
+    transform: translateX(2px);
+    transition: 0.3s;
+}
+
+td[colspan] {
+    text-align: center;
+    font-style: italic;
+    color: #6b7280;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    table, thead, tbody, th, td, tr {
+        display: block;
+    }
+
+    thead {
+        display: none;
+    }
+
+    tbody td {
+        padding: 12px;
+        position: relative;
+        padding-left: 50%;
+        text-align: left;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    tbody td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 20px;
+        top: 12px;
+        font-weight: 600;
+        color: #1f2937;
+    }
+}
