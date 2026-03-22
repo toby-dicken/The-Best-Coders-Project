@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WLV Home</title>
+
+<style>
+body{
+font-family:Arial;
+margin:0;
+padding:0;
+}
+
+nav{
+display:flex;
+justify-content:space-between;
+background:#333;
+color:white;
+padding:10px;
+}
+
+nav a{
+color:white;
+margin-right:15px;
+text-decoration:none;
+}
+
+.hero{
+padding:40px;
+text-align:center;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- LANGUAGE SELECT -->
+<div style="text-align:right;padding:10px;">
+
+<select onchange="changeLang(this.value)">
+<option value="en">English</option>
+<option value="es">Spanish</option>
+<option value="fr">French</option>
+<option value="de">German</option>
+<option value="zh">Chinese</option>
+<option value="ar">Arabic</option>
+<option value="ne">Nepali</option>
+</select>
+
+</div>
+
+<!-- NAVBAR -->
+<nav>
+
+<div>WLV</div>
+
+<div>
+<a href="#" class="translate"
+data-en="Home"
+data-es="Inicio"
+data-fr="Accueil"
+data-de="Startseite"
+data-zh="主页"
+data-ar="الرئيسية"
+data-ne="घर">Home</a>
+
+<a href="#" class="translate"
+data-en="Courses"
+data-es="Cursos"
+data-fr="Cours"
+data-de="Kurse"
+data-zh="课程"
+data-ar="الدورات"
+data-ne="पाठ्यक्रम">Courses</a>
+
+<a href="#" class="translate"
+data-en="Students"
+data-es="Estudiantes"
+data-fr="Étudiants"
+data-de="Studenten"
+data-zh="学生"
+data-ar="الطلاب"
+data-ne="विद्यार्थी">Students</a>
+
+<a href="#" class="translate"
+data-en="Clubs"
+data-es="Clubes"
+data-fr="Clubs"
+data-de="Clubs"
+data-zh="社团"
+data-ar="الأندية"
+data-ne="क्लबहरू">Clubs</a>
+
+</div>
+
+</nav>
+
+
+<!-- HERO -->
+<section class="hero">
+
+<h1 class="translate"
+data-en="Welcome to WLV Web Page"
+data-es="Bienvenido a la página WLV"
+data-fr="Bienvenue sur la page WLV"
+data-de="Willkommen auf der WLV Webseite"
+data-zh="欢迎来到 WLV 网站"
+data-ar="مرحبًا بكم في صفحة WLV"
+data-ne="WLV वेब पृष्ठमा स्वागत छ">
+
+Welcome to WLV Web Page
+
+</h1>
+
+
+<p class="translate"
+data-en="Explore courses, campus clubs, and student services."
+data-es="Explora cursos y servicios estudiantiles."
+data-fr="Explorez les cours et services étudiants."
+data-de="Entdecken Sie Kurse und Studentendienste."
+data-zh="探索课程和学生服务。"
+data-ar="استكشف الدورات وخدمات الطلاب."
+data-ne="पाठ्यक्रम र सेवाहरू अन्वेषण गर्नुहोस्।">
+
+Explore courses, campus clubs, and student services.
+
+</p>
+
+</section>
+
+
+<!-- FOOTER -->
+<footer style="text-align:center;padding:20px;background:#eee;">
+
+<p class="translate"
+data-en="© 2026 WLV Web Page | All Rights Reserved"
+data-es="© 2026 Página WLV | Todos los derechos reservados"
+data-fr="© 2026 Page WLV | Tous droits réservés"
+data-de="© 2026 WLV Webseite | Alle Rechte vorbehalten"
+data-zh="© 2026 WLV 网站 | 保留所有权利"
+data-ar="© 2026 صفحة WLV | جميع الحقوق محفوظة"
+data-ne="© 2026 WLV वेब पृष्ठ | सबै अधिकार सुरक्षित">
+
+© 2026 WLV Web Page | All Rights Reserved
+
+</p>
+
+</footer>
+
+
+<script>
+
+function changeLang(lang){
+
+document.querySelectorAll(".translate").forEach(el=>{
+
+const text=el.getAttribute("data-"+lang)
+
+if(text) el.innerText=text
+
+})
+
+document.body.dir = (lang==="ar") ? "rtl" : "ltr"
+
+}
+
+</script>
+
+</body>
+</html>
