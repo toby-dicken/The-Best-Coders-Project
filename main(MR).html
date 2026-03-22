@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WLV Home</title>
+<link rel="stylesheet" href="style.css">
+
+<style>
+
+/* FLEX CONTAINER FOR CONTENT + IMAGE */
+.content-wrapper{
+display:flex;
+flex-wrap:wrap;
+gap:20px;
+align-items:flex-start;
+padding:20px;
+}
+
+/* MAIN CONTENT */
+.main-content{
+flex:1;
+min-width:300px;
+}
+
+/* SIDE IMAGE */
+.side-image{
+flex:0 0 300px;
+}
+
+.side-image img{
+max-width:100%;
+height:auto;
+display:block;
+border-radius:8px;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- LANGUAGE SELECT -->
+<div style="text-align:right; padding:10px;">
+<label for="languageSelect">Select Language</label>
+
+<select id="languageSelect" onchange="setLanguage(this.value)">
+<option value="en">English</option>
+<option value="es">Spanish</option>
+<option value="fr">French</option>
+<option value="de">German</option>
+<option value="zh">Chinese</option>
+<option value="ar">Arabic</option>
+<option value="ne">Nepali</option>
+</select>
+
+</div>
+
+
+<!-- NAVIGATION -->
+<nav class="navbar">
+
+<div class="logo">WLV</div>
+
+<div class="nav-links">
+<a href="main(MR).html" id="navHome">Home</a>
+<a href="courses(MR).html" id="navCourses">Courses</a>
+<a href="students(MR).html" id="navStudents">Students</a>
+<a href="clubs(MR).html" id="navClubs">Clubs</a>
+<a href="support(MR).html" id="navSupport">Support</a>
+</div>
+
+<form class="search-box">
+<input type="text" id="searchInput" placeholder="Search...">
+<button type="submit" id="searchBtn">Search</button>
+</form>
+
+</nav>
+
+
+<!-- FLEX WRAPPER -->
+<div class="content-wrapper">
+
+
+<!-- MAIN CONTENT -->
+<div class="main-content">
+
+<!-- HERO -->
+<section class="hero">
+
+<h1 id="welcome">Welcome to WLV Web Page</h1>
+
+<p id="subtitle">
+Explore courses, campus clubs, and student services.
+</p>
+
+</section>
+
+
+<!-- SERVICES -->
+<section class="section">
+
+<h2 id="servicesTitle">Our Services</h2>
+
+<div class="cards">
+
+<a href="courses(MR).html" class="card-link">
+<div class="card">
+<h3 id="courseTitle">Courses</h3>
+<p id="courseDesc">High quality academic courses.</p>
+</div>
+</a>
+
+
+<a href="students(MR).html" class="card-link">
+<div class="card">
+<h3 id="studentTitle">Students</h3>
+<p id="studentDesc">Student dashboard & profiles.</p>
+</div>
+</a>
+
+
+<a href="library(MR).html" class="card-link">
+<div class="card">
+<h3 id="libraryTitle">Library</h3>
+<p id="libraryDesc">Digital resources & materials.</p>
+</div>
+</a>
+
+
+<!-- NEW CLUBS CARD -->
+<a href="clubs(MR).html" class="card-link">
+<div class="card">
+<h3 id="clubsTitle">Campus Clubs</h3>
+<p id="clubsDesc">Join clubs and student societies.</p>
+</div>
+</a>
+
+
+<a href="support(MR).html" class="card-link">
+<div class="card">
+<h3 id="supportTitle">Support</h3>
+<p id="supportDesc">24/7 help & assistance.</p>
+</div>
+</a>
+
+</div>
+
+</section>
+
+</div>
+
+
+<!-- SIDE IMAGE -->
+<div class="side-image">
+
+<img src="https://pxl-wlvacuk.terminalfour.net/fit-in/1500x10000/filters:quality(95)/prod01/wlvacuk/media/departments/digital-content-and-communications/images-2024/City-courtyard.jpg" 
+alt="University of Wolverhampton Building">
+
+</div>
+
+</div>
+
+
+<!-- FOOTER -->
+<footer>
+
+<p id="footerText">
+© 2026 WLV Web Page | All Rights Reserved
+</p>
+
+</footer>
+
+
+<script>
+
+
+const translations={
+
+en:{
+navHome:"Home",
+navCourses:"Courses",
+navStudents:"Students",
+navClubs:"Clubs",
+navSupport:"Support",
+
+searchInput:"Search...",
+searchBtn:"Search",
+
+welcome:"Welcome to WLV Web Page",
+subtitle:"Explore courses, campus clubs, and student services.",
+
+servicesTitle:"Our Services",
+
+courseTitle:"Courses",
+courseDesc:"High quality academic courses.",
+
+studentTitle:"Students",
+studentDesc:"Student dashboard & profiles.",
+
+libraryTitle:"Library",
+libraryDesc:"Digital resources & materials.",
+
+clubsTitle:"Campus Clubs",
+clubsDesc:"Join clubs and student societies.",
+
+supportTitle:"Support",
+supportDesc:"24/7 help & assistance.",
+
+footerText:"© 2026 WLV Web Page | All Rights Reserved"
+},
+
+
+ne:{
+navHome:"घर",
+navCourses:"पाठ्यक्रम",
+navStudents:"विद्यार्थी",
+navClubs:"क्लबहरू",
+navSupport:"समर्थन",
+
+searchInput:"खोज्नुहोस्...",
+searchBtn:"खोज्नुहोस्",
+
+welcome:"WLV वेब पृष्ठमा स्वागत छ",
+subtitle:"पाठ्यक्रम, क्याम्पस क्लब र सेवाहरू अन्वेषण गर्नुहोस्।",
+
+servicesTitle:"हाम्रा सेवाहरू",
+
+courseTitle:"पाठ्यक्रम",
+courseDesc:"उच्च गुणस्तरको शैक्षिक पाठ्यक्रम।",
+
+studentTitle:"विद्यार्थी",
+studentDesc:"विद्यार्थी ड्यासबोर्ड र प्रोफाइल।",
+
+libraryTitle:"पुस्तकालय",
+libraryDesc:"डिजिटल स्रोतहरू र सामग्री।",
+
+clubsTitle:"क्याम्पस क्लबहरू",
+clubsDesc:"विद्यार्थी क्लबहरूमा सहभागी हुनुहोस्।",
+
+supportTitle:"समर्थन",
+supportDesc:"२४/७ सहायता र सहयोग।",
+
+footerText:"© 2026 WLV वेब पृष्ठ | सबै अधिकार सुरक्षित"
+}
+
+};
+
+
+function translatePage(lang){
+
+document.documentElement.lang=lang;
+
+document.body.dir=(lang==="ar")?"rtl":"ltr";
+
+const t=translations[lang];
+
+for(let id in t){
+
+const el=document.getElementById(id);
+
+if(el) el.innerHTML=t[id];
+
+if(id==="searchInput" && el) el.placeholder=t[id];
+
+}
+
+}
+
+
+function setLanguage(lang){
+
+localStorage.setItem("selectedLanguage",lang);
+
+translatePage(lang);
+
+}
+
+
+window.onload=function(){
+
+const savedLang=localStorage.getItem("selectedLanguage") || "en";
+
+document.getElementById("languageSelect").value=savedLang;
+
+translatePage(savedLang);
+
+}
+
+</script>
+
+</body>
+</html>

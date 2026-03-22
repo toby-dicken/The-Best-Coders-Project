@@ -29,7 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $_SESSION["UserID"] = $user["UserID"];
                 $_SESSION["email"] = $user["email"];
 
-                header("Location: main(NS).php");
+                header("Location: main(TD).php");
                 exit;
 
             } else {
@@ -83,7 +83,7 @@ if ($error != "") {
 <input type="password" name="password" placeholder="Password" required><br><br>
 
 <input type="submit" value="Login" class="btn"><br><br>
-<p>Don't have an account? <a href="Create_acc_page(NS).php">Register here</a></p>
+<p>Don't have account? <a href="Create_acc_page(NS).php" >Register! </a></p>
 
 </form>
 

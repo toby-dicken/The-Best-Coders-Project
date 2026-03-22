@@ -3,7 +3,6 @@ session_start();
 include("db.php");
 
 $success = "";
-$error = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
@@ -14,25 +13,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (!empty($name) && !empty($email) && !empty($subject) && !empty($message)) {
 
-        if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $stmt = $mysqli->prepare("INSERT INTO ContactMessages (FullName, Email, Subject, Message) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("ssss", $name, $email, $subject, $message);
+        $stmt->execute();
+        $stmt->close();
 
-            $stmt = $mysqli->prepare("INSERT INTO ContactMessages (FullName, Email, Subject, Message) VALUES (?, ?, ?, ?)");
-            $stmt->bind_param("ssss", $name, $email, $subject, $message);
-            $stmt->execute();
-            $stmt->close();
-
-            $success = "Message sent successfully!";
-
-        } else {
-
-            $error = "Invalid email address.";
-
-        }
-
-    } else {
-
-        $error = "Please fill in all fields.";
-
+        $success = "Message sent successfully!";
     }
 }
 ?>
@@ -50,11 +36,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <div class="logo">WLV</div>
 
 <div class="nav-links">
-<a href="main(NS).php">Home</a>
-<a href="courses(NS).php">Courses</a>
+<a href="main(TD).php">Home</a>
+<a href="courses(NS).html">Courses</a>
 <a href="contact(NS).php">Contact</a>
 </div>
 </nav>
+
 
 <section class="section">
 
@@ -64,10 +51,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <?php
 if ($success != "") {
 echo "<p style='color:green;'>$success</p>";
-}
-
-if ($error != "") {
-echo "<p style='color:red;'>$error</p>";
 }
 ?>
 
