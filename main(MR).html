@@ -4,9 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WLV Home</title>
-
-<!-- Google Material Icons for card icons -->
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 
 <style>
 /* GLOBAL */
@@ -56,75 +54,7 @@ body{
   gap:20px;
 }
 
-.nav-item{
-  position:relative;
-  text-decoration:none;
-  color:#fff;
-  font-weight:500;
-  padding:5px 0;
-  transition:0.3s;
-}
-
-.nav-item::after{
-  content:"";
-  position:absolute;
-  left:0;
-  bottom:-5px;
-  width:0%;
-  height:2px;
-  background:#00c6ff;
-  transition:0.3s;
-}
-
-.nav-item:hover::after{
-  width:100%;
-}
-
-.nav-item.active{
-  color:#00c6ff;
-}
-
-.nav-item.active::after{
-  width:100%;
-}
-
-/* SEARCH BOX */
-.search-box input{
-  padding:8px;
-  border-radius:6px;
-  border:none;
-}
-
-.search-box button{
-  padding:8px 12px;
-  border:none;
-  border-radius:6px;
-  background:#00c6ff;
-  color:white;
-  cursor:pointer;
-}
-
-/* HERO */
-.hero{
-  background:rgba(255,255,255,0.9);
-  padding:50px;
-  border-radius:15px;
-  box-shadow:0 10px 30px rgba(0,0,0,0.2);
-  margin-bottom:20px;
-  text-align:center;
-}
-
-.hero h1{
-  font-size:36px;
-  margin-bottom:10px;
-}
-
-.hero p{
-  font-size:18px;
-  color:#555;
-}
-
-/* LAYOUT */
+/* FLEX CONTAINER FOR CONTENT + IMAGE */
 .content-wrapper{
   display:flex;
   flex-wrap:wrap;
@@ -226,9 +156,10 @@ footer{
 
 <body>
 
-<!-- LANGUAGE -->
-<div class="lang-bar">
-<label id="selectLang">Select Language</label>
+<!-- LANGUAGE SELECT -->
+<div style="text-align:right; padding:10px;">
+<label for="languageSelect">Select Language</label>
+
 <select id="languageSelect" onchange="setLanguage(this.value)">
 <option value="en">English</option>
 <option value="es">Spanish</option>
@@ -256,15 +187,27 @@ footer{
 </form>
 </nav>
 
-<!-- PAGE CONTENT -->
+
+<!-- FLEX WRAPPER -->
 <div class="content-wrapper">
 
+
+<!-- MAIN CONTENT -->
 <div class="main-content">
+
+<!-- HERO -->
 <section class="hero">
+
 <h1 id="welcome">Welcome to WLV Web Page</h1>
-<p id="subtitle">Explore courses, campus clubs, and student services.</p>
+
+<p id="subtitle">
+Explore courses, campus clubs, and student services.
+</p>
+
 </section>
 
+
+<!-- SERVICES -->
 <section class="section">
 <h2 id="servicesTitle">Our Services</h2>
 <div class="cards">
@@ -276,6 +219,7 @@ footer{
 </div>
 </a>
 
+
 <a href="students(MR).html" class="card-link">
 <div class="card">
 <i class="material-icons">people</i>
@@ -283,6 +227,7 @@ footer{
 <p id="studentDesc">Student dashboard & profiles.</p>
 </div>
 </a>
+
 
 <a href="library(MR).html" class="card-link">
 <div class="card">
@@ -292,6 +237,8 @@ footer{
 </div>
 </a>
 
+
+<!-- NEW CLUBS CARD -->
 <a href="clubs(MR).html" class="card-link">
 <div class="card">
 <i class="material-icons">sports_soccer</i>
@@ -299,6 +246,7 @@ footer{
 <p id="clubsDesc">Join clubs and student societies.</p>
 </div>
 </a>
+
 
 <a href="support(MR).html" class="card-link">
 <div class="card">
@@ -308,40 +256,142 @@ footer{
 </div>
 </a>
 </div>
+
 </section>
 </div>
 
 <div class="side-image">
-<img src="https://pxl-wlvacuk.terminalfour.net/fit-in/1500x10000/filters:quality(95)/prod01/wlvacuk/media/departments/digital-content-and-communications/images-2024/City-courtyard.jpg" alt="University of Wolverhampton Building">
+
+<img src="https://pxl-wlvacuk.terminalfour.net/fit-in/1500x10000/filters:quality(95)/prod01/wlvacuk/media/departments/digital-content-and-communications/images-2024/City-courtyard.jpg" 
+alt="University of Wolverhampton Building">
+
 </div>
 
 </div>
 
 <footer>
-<p id="footerText">© 2026 WLV Web Page | All Rights Reserved</p>
+
+<p id="footerText">
+© 2026 WLV Web Page | All Rights Reserved
+</p>
+
 </footer>
 
 <script>
-// Highlight active nav item
-const currentPage = window.location.pathname.split("/").pop();
-document.querySelectorAll(".nav-item").forEach(link => {
-  if(link.getAttribute("href") === currentPage){
-    link.classList.add("active");
-  }
-});
 
-// Animate cards on scroll
-const cards = document.querySelectorAll(".card");
-const observer = new IntersectionObserver(entries => {
-  entries.forEach(entry => {
-    if(entry.isIntersecting){
-      entry.target.style.opacity = 1;
-      entry.target.style.transform = "translateY(0)";
-    }
-  });
-},{threshold:0.2});
 
-cards.forEach(card => observer.observe(card));
+const translations={
+
+en:{
+navHome:"Home",
+navCourses:"Courses",
+navStudents:"Students",
+navClubs:"Clubs",
+navSupport:"Support",
+
+searchInput:"Search...",
+searchBtn:"Search",
+
+welcome:"Welcome to WLV Web Page",
+subtitle:"Explore courses, campus clubs, and student services.",
+
+servicesTitle:"Our Services",
+
+courseTitle:"Courses",
+courseDesc:"High quality academic courses.",
+
+studentTitle:"Students",
+studentDesc:"Student dashboard & profiles.",
+
+libraryTitle:"Library",
+libraryDesc:"Digital resources & materials.",
+
+clubsTitle:"Campus Clubs",
+clubsDesc:"Join clubs and student societies.",
+
+supportTitle:"Support",
+supportDesc:"24/7 help & assistance.",
+
+footerText:"© 2026 WLV Web Page | All Rights Reserved"
+},
+
+
+ne:{
+navHome:"घर",
+navCourses:"पाठ्यक्रम",
+navStudents:"विद्यार्थी",
+navClubs:"क्लबहरू",
+navSupport:"समर्थन",
+
+searchInput:"खोज्नुहोस्...",
+searchBtn:"खोज्नुहोस्",
+
+welcome:"WLV वेब पृष्ठमा स्वागत छ",
+subtitle:"पाठ्यक्रम, क्याम्पस क्लब र सेवाहरू अन्वेषण गर्नुहोस्।",
+
+servicesTitle:"हाम्रा सेवाहरू",
+
+courseTitle:"पाठ्यक्रम",
+courseDesc:"उच्च गुणस्तरको शैक्षिक पाठ्यक्रम।",
+
+studentTitle:"विद्यार्थी",
+studentDesc:"विद्यार्थी ड्यासबोर्ड र प्रोफाइल।",
+
+libraryTitle:"पुस्तकालय",
+libraryDesc:"डिजिटल स्रोतहरू र सामग्री।",
+
+clubsTitle:"क्याम्पस क्लबहरू",
+clubsDesc:"विद्यार्थी क्लबहरूमा सहभागी हुनुहोस्।",
+
+supportTitle:"समर्थन",
+supportDesc:"२४/७ सहायता र सहयोग।",
+
+footerText:"© 2026 WLV वेब पृष्ठ | सबै अधिकार सुरक्षित"
+}
+
+};
+
+
+function translatePage(lang){
+
+document.documentElement.lang=lang;
+
+document.body.dir=(lang==="ar")?"rtl":"ltr";
+
+const t=translations[lang];
+
+for(let id in t){
+
+const el=document.getElementById(id);
+
+if(el) el.innerHTML=t[id];
+
+if(id==="searchInput" && el) el.placeholder=t[id];
+
+}
+
+}
+
+
+function setLanguage(lang){
+
+localStorage.setItem("selectedLanguage",lang);
+
+translatePage(lang);
+
+}
+
+
+window.onload=function(){
+
+const savedLang=localStorage.getItem("selectedLanguage") || "en";
+
+document.getElementById("languageSelect").value=savedLang;
+
+translatePage(savedLang);
+
+}
+
 </script>
 
 </body>
