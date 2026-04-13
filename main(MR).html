@@ -9,6 +9,7 @@
 
 <style>
 
+/* BODY */
 body{
   margin:0;
   font-family:'Segoe UI', sans-serif;
@@ -24,6 +25,62 @@ body{
   100%{background-position:0% 50%}
 }
 
+/* HERO */
+.hero{
+  position:relative;
+  width:100%;
+  height:320px;
+  overflow:hidden;
+}
+
+.hero img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+
+.hero-overlay{
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:linear-gradient(
+    90deg,
+    rgba(0,0,0,0.65),
+    rgba(0,0,0,0.3),
+    rgba(0,0,0,0.65)
+  );
+}
+
+.hero-content{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  text-align:center;
+  color:white;
+  width:100%;
+}
+
+.hero-content .logo{
+  font-size:30px;
+  font-weight:bold;
+  letter-spacing:4px;
+}
+
+.hero-content h1{
+  margin:10px 0 0;
+  font-size:34px;
+}
+
+.hero-content p{
+  margin-top:8px;
+  font-size:16px;
+  opacity:0.9;
+}
+
 /* NAVBAR */
 .navbar{
   position:sticky;
@@ -31,10 +88,38 @@ body{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  padding:15px 20px;
-  background:rgba(0,0,0,0.7);
+  padding:12px 20px;
+  background:rgba(0,0,0,0.85);
   color:white;
   flex-wrap:wrap;
+  z-index:10;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  text-decoration:none;
+  color:white;
+  font-weight:bold;
+  font-size:18px;
+}
+
+.logo-img{
+  width:40px;
+  height:40px;
+  object-fit:cover;
+  border-radius:10px;
+  transition:0.3s;
+}
+
+.brand:hover .logo-img{
+  transform:scale(1.1) rotate(3deg);
+  box-shadow:0 0 12px rgba(0,198,255,0.8);
+}
+
+.brand:hover{
+  color:#00c6ff;
 }
 
 .nav-links{
@@ -46,17 +131,20 @@ body{
 .nav-links a{
   color:white;
   text-decoration:none;
+  transition:0.3s;
 }
 
-/* SEARCH */
+.nav-links a:hover{
+  color:#00c6ff;
+}
+
 #searchInput{
-  padding:6px;
+  padding:7px;
   border-radius:6px;
   border:none;
   outline:none;
 }
 
-/* LANGUAGE */
 select{
   padding:5px;
   border-radius:6px;
@@ -67,7 +155,7 @@ select{
   padding:20px;
 }
 
-/* HORIZONTAL CARDS */
+/* CARDS */
 .cards{
   display:flex;
   overflow-x:auto;
@@ -97,10 +185,48 @@ select{
   transform:translateY(-8px);
 }
 
+.card img{
+  width:100%;
+  border-radius:10px;
+  margin-bottom:10px;
+}
+
+/* FLOATING WOLVES IMAGE */
+.wolves-floating {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 55px;
+  z-index: 1000;
+  transition: 0.3s;
+}
+
+.wolves-floating img {
+  width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.wolves-floating:hover {
+  transform: scale(1.1);
+}
+
 </style>
 </head>
 
 <body>
+
+<!-- HERO -->
+<div class="hero">
+  <img src="University-of-Wolverhampton.png" alt="University Banner">
+  <div class="hero-overlay"></div>
+
+  <div class="hero-content">
+    <div class="logo">WLV</div>
+    <h1>University of Wolverhampton</h1>
+    <p>Welcome to your digital campus experience</p>
+  </div>
+</div>
 
 <!-- LANGUAGE -->
 <div style="text-align:right;padding:10px;">
@@ -116,17 +242,22 @@ select{
 
 <!-- NAVBAR -->
 <nav class="navbar">
-<div><b>WLV</b></div>
+
+<a href="#" class="brand">
+  <img src="University-of-Wolverhampton.png" class="logo-img" alt="Logo">
+  <span>WLV</span>
+</a>
 
 <div class="nav-links">
-<a href="#" id="navHome"></a>
-<a href="#" id="navCourses"></a>
-<a href="#" id="navStudents"></a>
-<a href="#" id="navClubs"></a>
-<a href="#" id="navSupport"></a>
+  <a href="#">Home</a>
+  <a href="#">Courses</a>
+  <a href="#">Students</a>
+  <a href="#">Events</a>
+  <a href="#">Support</a>
 </div>
 
-<input type="text" id="searchInput" placeholder="" onkeyup="searchCards()">
+<input type="text" id="searchInput" placeholder="Search..." onkeyup="searchCards()">
+
 </nav>
 
 <div class="content-wrapper">
@@ -156,6 +287,14 @@ select{
 <p id="libraryDesc"></p>
 </div>
 
+<!-- ✅ NEW WOLVES CARD -->
+<div class="card">
+<img src="wolves.png" alt="Wolves">
+<i class="material-icons">pets</i>
+<h3>Wolves</h3>
+<p>University Wolves Team</p>
+</div>
+
 <div class="card" onclick="location.href='events(TD).html'">
 <i class="material-icons">sports_soccer</i>
 <h3 id="clubsTitle"></h3>
@@ -171,73 +310,29 @@ select{
 </div>
 </div>
 
+<!-- FLOATING IMAGE -->
+<div class="wolves-floating">
+  <img src="wolves.png" alt="Wolves">
+</div>
+
 <script>
 
 const translations = {
 en:{
-navHome:"Home",navCourses:"Courses",navStudents:"Students",navClubs:"Events",navSupport:"Support",
-welcome:"Welcome to WLV",subtitle:"Explore services",servicesTitle:"Services",
+welcome:"Welcome to WLV",
+subtitle:"Explore services",
+servicesTitle:"Services",
 courseTitle:"Courses",courseDesc:"Academic courses",
 studentTitle:"Students",studentDesc:"Profiles",
 libraryTitle:"Library",libraryDesc:"Digital resources",
 clubsTitle:"Events",clubsDesc:"Join events",
 supportTitle:"Support",supportDesc:"24/7 help",
 searchInput:"Search..."
-},
-de:{
-navHome:"Start",navCourses:"Kurse",navStudents:"Studenten",navClubs:"Events",navSupport:"Support",
-welcome:"Willkommen",subtitle:"Dienste erkunden",servicesTitle:"Dienste",
-courseTitle:"Kurse",courseDesc:"Akademische Kurse",
-studentTitle:"Studenten",studentDesc:"Profile",
-libraryTitle:"Bibliothek",libraryDesc:"Ressourcen",
-clubsTitle:"Events",clubsDesc:"Teilnehmen",
-supportTitle:"Support",supportDesc:"Hilfe",
-searchInput:"Suchen..."
-},
-fr:{
-navHome:"Accueil",navCourses:"Cours",navStudents:"Étudiants",navClubs:"Événements",navSupport:"Support",
-welcome:"Bienvenue",subtitle:"Explorer",servicesTitle:"Services",
-courseTitle:"Cours",courseDesc:"Cours académiques",
-studentTitle:"Étudiants",studentDesc:"Profils",
-libraryTitle:"Bibliothèque",libraryDesc:"Ressources",
-clubsTitle:"Événements",clubsDesc:"Participer",
-supportTitle:"Support",supportDesc:"Aide",
-searchInput:"Rechercher..."
-},
-hi:{
-navHome:"होम",navCourses:"कोर्स",navStudents:"छात्र",navClubs:"कार्यक्रम",navSupport:"सपोर्ट",
-welcome:"स्वागत है",subtitle:"सेवाएँ देखें",servicesTitle:"सेवाएँ",
-courseTitle:"कोर्स",courseDesc:"शैक्षणिक कोर्स",
-studentTitle:"छात्र",studentDesc:"प्रोफाइल",
-libraryTitle:"लाइब्रेरी",libraryDesc:"संसाधन",
-clubsTitle:"कार्यक्रम",clubsDesc:"भाग लें",
-supportTitle:"सपोर्ट",supportDesc:"मदद",
-searchInput:"खोजें..."
-},
-ne:{
-navHome:"घर",navCourses:"पाठ्यक्रम",navStudents:"विद्यार्थी",navClubs:"कार्यक्रम",navSupport:"समर्थन",
-welcome:"स्वागत छ",subtitle:"सेवाहरू",servicesTitle:"सेवाहरू",
-courseTitle:"पाठ्यक्रम",courseDesc:"उच्च गुणस्तर",
-studentTitle:"विद्यार्थी",studentDesc:"प्रोफाइल",
-libraryTitle:"पुस्तकालय",libraryDesc:"डिजिटल",
-clubsTitle:"कार्यक्रम",clubsDesc:"सहभागी",
-supportTitle:"समर्थन",supportDesc:"२४/७ सहायता",
-searchInput:"खोज्नुहोस्..."
-},
-ur:{
-navHome:"ہوم",navCourses:"کورسز",navStudents:"طلبہ",navClubs:"ایونٹس",navSupport:"سپورٹ",
-welcome:"خوش آمدید",subtitle:"خدمات دیکھیں",servicesTitle:"خدمات",
-courseTitle:"کورسز",courseDesc:"تعلیمی",
-studentTitle:"طلبہ",studentDesc:"پروفائل",
-libraryTitle:"لائبریری",libraryDesc:"وسائل",
-clubsTitle:"ایونٹس",clubsDesc:"شرکت",
-supportTitle:"سپورٹ",supportDesc:"مدد",
-searchInput:"تلاش..."
 }
 };
 
 function applyLanguage(lang){
-  const t = translations[lang];
+  const t = translations[lang] || translations.en;
 
   document.getElementById("welcome").innerText = t.welcome;
   document.getElementById("subtitle").innerText = t.subtitle;
@@ -259,8 +354,6 @@ function applyLanguage(lang){
   document.getElementById("supportDesc").innerText = t.supportDesc;
 
   document.getElementById("searchInput").placeholder = t.searchInput;
-
-  localStorage.setItem("lang", lang);
 }
 
 function setLanguage(lang){
@@ -269,15 +362,14 @@ function setLanguage(lang){
 
 function searchCards(){
   let input = document.getElementById("searchInput").value.toLowerCase();
+
   document.querySelectorAll(".card").forEach(card=>{
-    card.style.display = card.innerText.toLowerCase().includes(input) ? "flex" : "none";
+    card.hidden = !card.innerText.toLowerCase().includes(input);
   });
 }
 
 window.onload = function(){
-  let lang = localStorage.getItem("lang") || "en";
-  document.getElementById("languageSelect").value = lang;
-  applyLanguage(lang);
+  applyLanguage("en");
 
   document.querySelectorAll(".card").forEach((c,i)=>{
     setTimeout(()=>c.classList.add("show"), i*120);
