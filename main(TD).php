@@ -1,229 +1,241 @@
+<?php
+session_start();
+include("db.php");
+
+if (!isset($_SESSION["UserID"])) {
+    header("Location: login(NS).php");
+    exit;
+}
+
+$userID = $_SESSION["UserID"];
+
+/* USER */
+$stmt = $mysqli->prepare("SELECT email, FirstName FROM Persons WHERE UserID=?");
+$stmt->bind_param("i",$userID);
+$stmt->execute();
+$user = $stmt->get_result()->fetch_assoc();
+
+/* REWARDS */
+$points=0; $lastCheck=null; $checkinMessage="";
+$stmt=$mysqli->prepare("SELECT points,last_checkin FROM rewards WHERE UserID=?");
+$stmt->bind_param("i",$userID);
+$stmt->execute();
+$res=$stmt->get_result();
+
+if($res->num_rows==0){
+    $mysqli->query("INSERT INTO rewards(UserID,points) VALUES ($userID,0)");
+}else{
+    $row=$res->fetch_assoc();
+    $points=$row["points"];
+    $lastCheck=$row["last_checkin"];
+}
+
+if(isset($_POST["checkin"])){
+    $today=date("Y-m-d");
+    if($lastCheck!=$today){
+        $points+=10;
+        $stmt=$mysqli->prepare("UPDATE rewards SET points=?,last_checkin=? WHERE UserID=?");
+        $stmt->bind_param("isi",$points,$today,$userID);
+        $stmt->execute();
+        $lastCheck=$today;
+        $checkinMessage="✅ +10 points!";
+    } else {
+        $checkinMessage="⚠ Already checked today";
+    }
+}
+
+/* SEARCH */
+$searchResults=null;
+if(isset($_GET["search"])){
+    $k="%".$_GET["search"]."%";
+    $stmt=$mysqli->prepare("SELECT CourseName,Description FROM Courses WHERE CourseName LIKE ? OR Description LIKE ?");
+    $stmt->bind_param("ss",$k,$k);
+    $stmt->execute();
+    $searchResults=$stmt->get_result();
+}
+
+/* EXTRA FEATURES */
+$announcements=$mysqli->query("SELECT * FROM announcements ORDER BY created_at DESC LIMIT 3");
+$events=$mysqli->query("SELECT * FROM events WHERE event_date>=NOW() ORDER BY event_date ASC LIMIT 3");
+
+$leaderboard=$mysqli->query("
+SELECT Persons.FirstName,rewards.points 
+FROM rewards JOIN Persons ON Persons.UserID=rewards.UserID 
+ORDER BY points DESC LIMIT 5");
+
+$posts=$mysqli->query("
+SELECT posts.*,Persons.FirstName 
+FROM posts JOIN Persons ON Persons.UserID=posts.userID 
+ORDER BY posts.created_at DESC LIMIT 5");
+
+/* POST SUBMIT */
+if(isset($_POST["post_content"])){
+    $content=$_POST["post_content"];
+    $stmt=$mysqli->prepare("INSERT INTO posts(userID,content) VALUES (?,?)");
+    $stmt->bind_param("is",$userID,$content);
+    $stmt->execute();
+    header("Refresh:0");
+}
+?>
+
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WLV Home</title>
-
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<title>Campus Hub</title>
 
 <style>
-
-/* BACKGROUND */
-body{
-  margin:0;
-  font-family:'Segoe UI', sans-serif;
-  background:linear-gradient(-45deg,#00c6ff,#0072ff,#ff758c,#ff7eb3);
-  background-size:400% 400%;
-  animation:gradientMove 12s ease infinite;
-  color:#333;
+body {
+    margin:0;
+    font-family:Segoe UI;
+    background: linear-gradient(135deg,#4facfe,#00f2fe);
+    color:white;
 }
 
-@keyframes gradientMove{
-  0%{background-position:0% 50%}
-  50%{background-position:100% 50%}
-  100%{background-position:0% 50%}
+/* NAV */
+.navbar{
+    display:flex;
+    justify-content:space-between;
+    padding:15px;
+    background:rgba(0,0,0,0.6);
+    backdrop-filter:blur(10px);
 }
+
+.nav-links a{color:white;margin:10px;text-decoration:none;}
+.nav-links a:hover{color:#00f2fe}
 
 /* HERO */
-.hero{position:relative;height:300px;overflow:hidden;}
-.hero img{width:100%;height:100%;object-fit:cover;}
-.hero-overlay{position:absolute;width:100%;height:100%;background:rgba(0,0,0,0.5);}
-.hero-content{
-  position:absolute;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
-  color:white;
-  text-align:center;
+.hero{
+    background:rgba(0,0,0,0.3);
+    padding:25px;
+    border-radius:15px;
+    margin:20px;
 }
 
-/* NAVBAR */
-.navbar{
-  position:sticky;
-  top:0;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:12px;
-  background:rgba(0,0,0,0.85);
-  color:white;
-  flex-wrap:wrap;
-}
-
-.nav-links a{
-  color:white;
-  margin:0 10px;
-  text-decoration:none;
-}
-
-.nav-links a:hover{
-  color:#00c6ff;
-}
-
-.search-box input{
-  padding:6px;
-  border-radius:5px;
-  border:none;
-}
-
-/* CONTENT */
-.content-wrapper{padding:20px;}
-
-.cards{
-  display:flex;
-  gap:20px;
-  overflow-x:auto;
-}
+/* GRID */
+.grid{display:flex;flex-wrap:wrap;gap:20px;padding:20px;}
 
 .card{
-  min-width:220px;
-  padding:20px;
-  border-radius:12px;
-  background:rgba(255,255,255,0.15);
-  backdrop-filter:blur(10px);
-  color:white;
-  cursor:pointer;
-  transition:0.3s;
+    background:rgba(255,255,255,0.15);
+    backdrop-filter:blur(10px);
+    padding:15px;
+    border-radius:12px;
+    flex:1 1 250px;
+    transition:0.3s;
 }
 
 .card:hover{
-  transform:translateY(-8px) scale(1.05);
-  box-shadow:0 0 20px rgba(0,198,255,0.6);
+    transform:translateY(-5px);
 }
 
-/* CHECKIN */
-.checkin-box{
-  background:#d4edda;
-  padding:10px;
-  margin-top:10px;
-  border-radius:5px;
-  color:#155724;
+/* BUTTON */
+button{
+    padding:10px;
+    border:none;
+    border-radius:8px;
+    background:#00f2fe;
+    cursor:pointer;
 }
 
+/* DARK */
+.dark{background:#111;color:#eee;}
 </style>
 </head>
 
 <body>
 
-<!-- HERO -->
-<div class="hero">
-<img src="University-of-Wolverhampton.png">
-<div class="hero-overlay"></div>
-
-<div class="hero-content">
-<h1 id="welcomeUser">Welcome Student</h1>
-<p>Digital Campus Experience</p>
-</div>
-</div>
-
-<!-- NAV -->
-<nav class="navbar">
-
-<div>WLV</div>
+<div class="navbar">
+<div>WLV | <?php echo $user["email"]; ?></div>
 
 <div class="nav-links">
 <a href="#">Home</a>
 <a href="#">Courses</a>
-<a href="#">Events</a>
+<a href="#">Clubs</a>
 <a href="#">Support</a>
 </div>
 
-<input type="text" id="searchInput" placeholder="Search..." onkeyup="searchCards()">
+<button onclick="toggleDark()">🌙</button>
+</div>
 
-</nav>
+<!-- HERO -->
+<div class="hero">
+<h1>Welcome <?php echo $user["FirstName"]; ?> 👋</h1>
+<p>Campus Live Hub Dashboard</p>
 
-<div class="content-wrapper">
+<div id="clock"></div>
 
-<!-- CHECK-IN -->
-<h2>Reward Points: <span id="points">0</span></h2>
-<button onclick="checkIn()">Daily Check-In</button>
-<div id="checkMsg"></div>
+<p>🔥 <?php echo $points; ?> Points</p>
 
-<!-- CARDS -->
-<h2>Services</h2>
-<div class="cards" id="cardContainer">
+<form method="POST">
+<button name="checkin">Daily Check-in</button>
+</form>
 
+<p><?php echo $checkinMessage; ?></p>
+</div>
+
+<div class="grid">
+
+<!-- ANNOUNCEMENTS -->
 <div class="card">
-<h3>Courses</h3>
-<p>Academic courses</p>
+<h3>📢 Announcements</h3>
+<?php while($a=$announcements->fetch_assoc()){ ?>
+<p><b><?php echo $a["title"]; ?></b><br><?php echo $a["content"]; ?></p>
+<?php } ?>
 </div>
 
+<!-- EVENTS -->
 <div class="card">
-<h3>Students</h3>
-<p>Profiles</p>
+<h3>📅 Events</h3>
+<?php while($e=$events->fetch_assoc()){ ?>
+<p><?php echo $e["title"]; ?><br><?php echo $e["event_date"]; ?></p>
+<?php } ?>
 </div>
 
+<!-- LEADERBOARD -->
 <div class="card">
-<h3>Library</h3>
-<p>Resources</p>
+<h3>🏆 Leaderboard</h3>
+<?php while($l=$leaderboard->fetch_assoc()){ ?>
+<p><?php echo $l["FirstName"]; ?> - <?php echo $l["points"]; ?></p>
+<?php } ?>
 </div>
 
+<!-- POSTS -->
 <div class="card">
-<h3>Wolves</h3>
-<p>University Team</p>
+<h3>💬 Student Feed</h3>
+
+<form method="POST">
+<textarea name="post_content" placeholder="Share something..." style="width:100%"></textarea>
+<button>Post</button>
+</form>
+
+<?php while($p=$posts->fetch_assoc()){ ?>
+<p><b><?php echo $p["FirstName"]; ?></b>: <?php echo $p["content"]; ?></p>
+<?php } ?>
 </div>
 
-<div class="card">
-<h3>Events</h3>
-<p>Join events</p>
 </div>
 
-<div class="card">
-<h3>Support</h3>
-<p>24/7 help</p>
-</div>
+<!-- SEARCH -->
+<div style="padding:20px;">
+<form method="GET">
+<input type="text" name="search" placeholder="Search courses">
+<button>Search</button>
+</form>
 
-</div>
-
+<?php if($searchResults){ 
+while($r=$searchResults->fetch_assoc()){ ?>
+<p><?php echo $r["CourseName"]; ?> - <?php echo $r["Description"]; ?></p>
+<?php }} ?>
 </div>
 
 <script>
-
-/* -------------------------
-   FAKE USER (SIMULATION)
---------------------------*/
-let userName = localStorage.getItem("userName") || "Student";
-document.getElementById("welcomeUser").innerText = "Welcome " + userName;
-
-/* -------------------------
-   POINT SYSTEM
---------------------------*/
-let points = localStorage.getItem("points") || 0;
-let lastCheck = localStorage.getItem("lastCheck");
-
-document.getElementById("points").innerText = points;
-
-function checkIn(){
-  let today = new Date().toISOString().split("T")[0];
-
-  if(lastCheck !== today){
-    points = parseInt(points) + 10;
-    localStorage.setItem("points", points);
-    localStorage.setItem("lastCheck", today);
-
-    document.getElementById("points").innerText = points;
-    document.getElementById("checkMsg").innerHTML =
-      "<div class='checkin-box'>Check-in successful! +10 points</div>";
-
-  } else {
-    document.getElementById("checkMsg").innerHTML =
-      "<div class='checkin-box'>Already checked in today</div>";
-  }
+function toggleDark(){
+    document.body.classList.toggle("dark");
 }
 
-/* -------------------------
-   SEARCH SYSTEM
---------------------------*/
-function searchCards(){
-  let input = document.getElementById("searchInput").value.toLowerCase();
-
-  document.querySelectorAll(".card").forEach(card=>{
-    let text = card.innerText.toLowerCase();
-    card.style.display = text.includes(input) ? "block" : "none";
-  });
-}
-
+setInterval(()=>{
+document.getElementById("clock").innerHTML=new Date().toLocaleTimeString();
+},1000);
 </script>
 
 </body>
