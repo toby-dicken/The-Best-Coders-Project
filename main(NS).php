@@ -275,6 +275,7 @@ $t = $translations[$lang];
 <div class="nav-links">
     <a href="main(NS).php?lang=<?php echo htmlspecialchars($lang); ?>"><?php echo htmlspecialchars($t["navHome"]); ?></a>
     <a href="courses(TD).php"><?php echo htmlspecialchars($t["navCourses"]); ?></a>
+    <a href="inbox.php">Inbox</a>
     <a href="clubs(MR).html"><?php echo htmlspecialchars($t["navClubs"]); ?></a>
     <a href="contact(NS).php"><?php echo htmlspecialchars($t["navSupport"]); ?></a>
     <a href="logout(NS).php">Logout</a>
