@@ -1,0 +1,6 @@
+Hi everyone, I had another idea for the MMP stage that could make our app more practical and modern. We could introduce a Digital Student ID feature where each student has a unique QR/barcode inside their profile. This could potentially be used for identification, attendance check-ins, or library verification instead of relying on physical ID cards.
+
+User Story:
+As a student, I want to access a digital QR/barcode ID through the app so that I can use it for university identification and academic services conveniently.
+
+We can keep the implementation simple by generating and displaying the code within the profile section. Let me know what you all think about adding this feature.
