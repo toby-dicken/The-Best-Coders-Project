@@ -1,0 +1,6 @@
+Hi everyone, I was thinking about another possible MMP feature that could improve student engagement and motivation within the app. We could introduce a simple Achievement and Progress System where students receive badges or progress indicators based on attendance consistency, assignment submissions, or overall activity.
+
+User Story:
+As a student, I want to receive achievements and progress feedback based on my academic activity so that I feel motivated to stay consistent and improve my performance.
+
+We can keep the implementation simple by showing progress percentages or awarding basic badges such as “On-Time Submission” or “Consistent Attendance.” Let me know what you think about adding this feature.
