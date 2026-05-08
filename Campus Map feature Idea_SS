@@ -1,0 +1,6 @@
+Hi everyone, I was thinking we could also add a simple Campus Map feature for the MMP stage. The idea is to help students easily locate important university facilities such as classrooms, the library, study areas, and admin offices within the app.
+
+User Story:
+As a student, I want to view a campus map in the app so that I can quickly find university locations and navigate the campus more easily.
+
+We can keep the implementation simple by using a static map with marked locations and basic information when users click on a specific area. Let me know your thoughts on adding this feature.
