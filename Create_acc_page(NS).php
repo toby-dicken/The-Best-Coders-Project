@@ -1,45 +1,55 @@
 <?php
-
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-session_start();
+require_once __DIR__ . '/security/session.php';
+secure_session_start();
 include("db.php");
 
 $error = "";
 $success = "";
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
-    $FirstName = trim($_POST["FirstName"]);
-    $email = trim($_POST["email"]);
-    $password = trim($_POST["password"]);
-
-    if (!$FirstName || !$email || !$password) {
-        $error = "Please fill all fields.";
+    $token = $_POST["csrf_token"] ?? "";
+    if (!csrf_verify($token)) {
+        $error = "Invalid request.";
     } else {
 
-        // Check if email exists
-        $check = $mysqli->prepare("SELECT UserID FROM Persons WHERE email = ?");
-        $check->bind_param("s", $email);
-        $check->execute();
-        $result = $check->get_result();
+        $FirstName = trim($_POST["FirstName"] ?? "");
+        $LastName  = trim($_POST["LastName"] ?? "");
+        $email     = trim($_POST["email"] ?? "");
+        $password  = trim($_POST["password"] ?? "");
 
-        if ($result->num_rows > 0) {
-            $error = "Email already registered!";
+        if ($FirstName === "" || $LastName === "" || $email === "" || $password === "") {
+            $error = "Please fill all fields.";
+        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $error = "Please enter a valid email.";
+        } elseif (strlen($password) < 8) {
+            $error = "Password must be at least 8 characters.";
         } else {
 
-            $hashed = password_hash($password, PASSWORD_DEFAULT);
+            $check = $mysqli->prepare("SELECT UserID FROM Persons WHERE email = ?");
+            $check->bind_param("s", $email);
+            $check->execute();
+            $result = $check->get_result();
 
-            $stmt = $mysqli->prepare("INSERT INTO Persons (FirstName, LastName, email, password) VALUES (?, ?, ?, ?)");
-            $stmt->bind_param("ssss", $FirstName, $_POST["LastName"], $email, $hashed);
-
-            if ($stmt->execute()) {
-                $success = "Registration successful! You can now login.";
+            if ($result->num_rows > 0) {
+                $error = "Email already registered!";
             } else {
-                $error = "Error: " . $mysqli->error;
+                $hashed = password_hash($password, PASSWORD_DEFAULT);
+
+                $stmt = $mysqli->prepare("INSERT INTO Persons (FirstName, LastName, email, password) VALUES (?, ?, ?, ?)");
+                $stmt->bind_param("ssss", $FirstName, $LastName, $email, $hashed);
+
+                if ($stmt->execute()) {
+                    $success = "Registration successful! You can now login.";
+                } else {
+                    error_log("Registration DB error: " . $mysqli->error);
+                    $error = "Registration failed. Please try again.";
+                }
+
+                $stmt->close();
             }
+
+            $check->close();
         }
     }
 }
@@ -57,19 +67,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <h2>Register</h2>
 
             <?php if($error): ?>
-                <div class="alert alert-danger"><?= $error ?></div>
+                <div class="alert alert-danger"><?php echo htmlspecialchars($error); ?></div>
             <?php endif; ?>
 
             <?php if($success): ?>
-                <div class="alert alert-success"><?= $success ?></div>
+                <div class="alert alert-success"><?php echo htmlspecialchars($success); ?></div>
             <?php endif; ?>
 
-            <form method="post">
+            <form method="post" action="Create_acc_page(NS).php" autocomplete="on">
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrf_token()); ?>">
 
                 <label class="form-label">First Name</label>
                 <input type="text" name="FirstName" class="form-control mb-3" required>
-                
-                <LABEL class="form-label">Last Name</LABEL>
+
+                <label class="form-label">Last Name</label>
                 <input type="text" name="LastName" class="form-control mb-3" required>
 
                 <label class="form-label">Email</label>

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WLV Home</title>
+
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  font-family:'Segoe UI', Tahoma, sans-serif;
+  background:linear-gradient(-45deg, #00c6ff, #0072ff, #ff758c, #ff7eb3);
+  background-size:400% 400%;
+  animation:gradientMove 12s ease infinite;
+  color:#333;
+}
+
+@keyframes gradientMove{
+  0%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+  100%{background-position:0% 50%;}
+}
+
+/* LANGUAGE */
+.lang-bar{
+  text-align:right;
+  padding:10px 20px;
+}
+
+/* NAVBAR */
+.navbar{
+  position:sticky;
+  top:0;
+  z-index:1000;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:15px 30px;
+  background:rgba(0,0,0,0.65);
+  backdrop-filter:blur(12px);
+  color:#fff;
+}
+
+.logo{
+  font-size:24px;
+  font-weight:bold;
+}
+
+.nav-links{
+  display:flex;
+  gap:20px;
+}
+
+.nav-item{
+  text-decoration:none;
+  color:#fff;
+}
+
+/* SEARCH */
+.search-box input{
+  padding:8px;
+  border:none;
+  border-radius:6px;
+}
+
+/* LAYOUT */
+.content-wrapper{
+  display:flex;
+  flex-wrap:wrap;
+  gap:20px;
+  padding:20px;
+}
+
+.main-content{
+  flex:1;
+  min-width:300px;
+}
+
+.side-image{
+  flex:0 0 320px;
+}
+
+.side-image img{
+  width:100%;
+  border-radius:12px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.2);
+}
+
+/* HERO */
+.hero{
+  background:rgba(255,255,255,0.9);
+  padding:40px;
+  border-radius:15px;
+  text-align:center;
+  margin-bottom:20px;
+}
+
+/* SECTION */
+.section{
+  background:rgba(255,255,255,0.9);
+  padding:20px;
+  border-radius:12px;
+}
+
+/* CARDS */
+.cards{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:20px;
+}
+
+.card{
+  background:white;
+  padding:20px;
+  border-radius:12px;
+  box-shadow:0 5px 15px rgba(0,0,0,0.1);
+  opacity:0;
+  transform:translateY(20px);
+  transition:0.4s;
+}
+
+.card:hover{
+  transform:translateY(-10px);
+}
+
+.card i{
+  font-size:40px;
+  color:#00c6ff;
+}
+
+footer{
+  text-align:center;
+  padding:20px;
+  background:black;
+  color:white;
+}
+</style>
+</head>
+
+<body>
+
+<div class="lang-bar">
+<select id="languageSelect" onchange="setLanguage(this.value)">
+  <option value="en">English</option>
+  <option value="es">Spanish</option>
+  <option value="fr">French</option>
+  <option value="de">German</option>
+  <option value="ar">Arabic</option>
+  <option value="ne">Nepali</option>
+  <option value="zh">Chinese</option>
+</select>
+</div>
+
+<nav class="navbar">
+<div class="logo">WLV</div>
+
+<div class="nav-links">
+<a href="main(MR).html" class="nav-item" id="navHome">Home</a>
+<a href="courses(MR).html" class="nav-item" id="navCourses">Courses</a>
+<a href="students(MR).html" class="nav-item" id="navStudents">Students</a>
+<a href="clubs(MR).html" class="nav-item" id="navClubs">Clubs</a>
+<a href="support(MR).html" class="nav-item" id="navSupport">Support</a>
+</div>
+
+<div class="search-box">
+<input type="text" id="searchInput" placeholder="Search...">
+</div>
+</nav>
+
+<div class="content-wrapper">
+
+<div class="main-content">
+
+<section class="hero">
+<h1 id="welcome">Welcome to WLV Web Page</h1>
+<p id="subtitle">Explore courses, campus clubs, and student services.</p>
+</section>
+
+<section class="section">
+<h2 id="servicesTitle">Our Services</h2>
+
+<div class="cards">
+
+<a href="courses(MR).html"><div class="card"><i class="material-icons">menu_book</i><h3 id="courseTitle">Courses</h3><p id="courseDesc">High quality academic courses.</p></div></a>
+
+<a href="students(MR).html"><div class="card"><i class="material-icons">people</i><h3 id="studentTitle">Students</h3><p id="studentDesc">Student dashboard & profiles.</p></div></a>
+
+<a href="library(MR).html"><div class="card"><i class="material-icons">library_books</i><h3 id="libraryTitle">Library</h3><p id="libraryDesc">Digital resources.</p></div></a>
+
+<a href="clubs(MR).html"><div class="card"><i class="material-icons">sports_soccer</i><h3 id="clubsTitle">Clubs</h3><p id="clubsDesc">Join clubs.</p></div></a>
+
+<a href="support(MR).html"><div class="card"><i class="material-icons">support_agent</i><h3 id="supportTitle">Support</h3><p id="supportDesc">24/7 help.</p></div></a>
+
+</div>
+</section>
+
+</div>
+
+<div class="side-image">
+<img src="https://pxl-wlvacuk.terminalfour.net/fit-in/1500x10000/filters:quality(95)/prod01/wlvacuk/media/departments/digital-content-and-communications/images-2024/City-courtyard.jpg">
+</div>
+
+</div>
+
+<footer>
+<p id="footerText">© 2026 WLV Web Page | All Rights Reserved</p>
+</footer>
+
+<script>
+const translations = {
+en:{
+welcome:"Welcome to WLV Web Page",
+subtitle:"Explore courses, campus clubs, and student services.",
+servicesTitle:"Our Services",
+courseTitle:"Courses",
+courseDesc:"High quality academic courses.",
+studentTitle:"Students",
+studentDesc:"Student dashboard & profiles.",
+libraryTitle:"Library",
+libraryDesc:"Digital resources.",
+clubsTitle:"Clubs",
+clubsDesc:"Join clubs.",
+supportTitle:"Support",
+supportDesc:"24/7 help.",
+searchInput:"Search..."
+},
+ne:{
+welcome:"WLV मा स्वागत छ",
+subtitle:"सेवाहरू हेर्नुहोस्",
+servicesTitle:"सेवाहरू",
+courseTitle:"पाठ्यक्रम",
+courseDesc:"उच्च गुणस्तर",
+studentTitle:"विद्यार्थी",
+studentDesc:"प्रोफाइल",
+libraryTitle:"पुस्तकालय",
+libraryDesc:"डिजिटल स्रोत",
+clubsTitle:"क्लब",
+clubsDesc:"सहभागी हुनुहोस्",
+supportTitle:"समर्थन",
+supportDesc:"२४/७ सहायता",
+searchInput:"खोज्नुहोस्..."
+}
+};
+
+function applyLanguage(lang){
+const t = translations[lang];
+document.documentElement.lang = lang;
+
+for(const id in t){
+const el = document.getElementById(id);
+if(el) el.innerText = t[id];
+}
+
+document.getElementById("searchInput").placeholder = t.searchInput;
+}
+
+function setLanguage(lang){
+localStorage.setItem("lang",lang);
+applyLanguage(lang);
+}
+
+document.addEventListener("DOMContentLoaded",()=>{
+const lang = localStorage.getItem("lang") || "en";
+document.getElementById("languageSelect").value = lang;
+applyLanguage(lang);
+
+document.querySelectorAll(".card").forEach((c,i)=>{
+setTimeout(()=>c.classList.add("show"), i*120);
+});
+});
+</script>
+
+</body>
+</html>
