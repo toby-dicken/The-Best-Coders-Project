@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>University Campus Map (Clean)</title>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+<style>
+
+body{
+margin:0;
+font-family:Segoe UI;
+}
+
+#map{
+height:100vh;
+width:100%;
+}
+
+.controls{
+position:absolute;
+top:10px;
+left:50%;
+transform:translateX(-50%);
+width:420px;
+z-index:999;
+background:white;
+padding:12px;
+border-radius:10px;
+box-shadow:0 3px 10px rgba(0,0,0,0.3);
+}
+
+input{
+width:100%;
+margin-bottom:6px;
+padding:8px;
+}
+
+button{
+width:100%;
+padding:10px;
+background:#007bff;
+color:white;
+border:none;
+border-radius:6px;
+cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="controls">
+
+<input id="searchBox" placeholder="Search campus place (library, cafeteria...)">
+
+<div style="display:flex;gap:5px;">
+<input id="start" placeholder="Start location">
+<input id="end" placeholder="Destination">
+</div>
+
+<button onclick="getRoute()">Get Route</button>
+
+</div>
+
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+
+let map;
+let routeLayer;
+
+function initMap(){
+
+/* BASE MAP */
+map = L.map('map').setView([52.5848, -2.1273], 14);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+attribution: '&copy; OpenStreetMap contributors'
+}).addTo(map);
+
+
+/* =========================
+   🏫 CAMPUSES (ONLY FIXED MARKERS)
+========================= */
+
+const campuses = [
+{
+name: "University of Wolverhampton - City Campus",
+coords: [52.5870, -2.1288],
+info: "Main Campus (Computing, Business, Engineering)"
+},
+{
+name: "Walsall Campus",
+coords: [52.5804, -1.9805],
+info: "Health, Sport & Nursing"
+},
+{
+name: "Telford Campus",
+coords: [52.6765, -2.4431],
+info: "Technology & Innovation"
+}
+];
+
+campuses.forEach(c => {
+
+L.marker(c.coords)
+.addTo(map)
+.bindPopup("<b>" + c.name + "</b><br>" + c.info);
+
+});
+
+
+/* =========================
+   📍 STUDENT FACILITIES
+========================= */
+
+const places = [
+{ name: "Library", coords: [52.5865, -2.1295] },
+{ name: "Student Union", coords: [52.5873, -2.1275] },
+{ name: "Cafeteria", coords: [52.5868, -2.1279] },
+{ name: "Sports Centre", coords: [52.5890, -2.1310] }
+];
+
+places.forEach(p => {
+
+L.marker(p.coords)
+.addTo(map)
+.bindPopup("<b>" + p.name + "</b>");
+
+});
+
+
+/* =========================
+   🔍 SEARCH FUNCTION (FREE)
+========================= */
+
+document.getElementById("searchBox").addEventListener("change", async function(){
+
+let query = this.value;
+
+let res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${query}`);
+let data = await res.json();
+
+if(data.length > 0){
+
+map.setView([data[0].lat, data[0].lon], 16);
+
+L.marker([data[0].lat, data[0].lon])
+.addTo(map)
+.bindPopup(query)
+.openPopup();
+
+} else {
+alert("Location not found");
+}
+
+});
+
+}
+
+initMap();
+
+
+/* =========================
+   🚗 ROUTE SYSTEM (FREE OSRM)
+========================= */
+
+async function getRoute(){
+
+let start = document.getElementById("start").value;
+let end = document.getElementById("end").value;
+
+if(!start || !end){
+alert("Enter start and destination");
+return;
+}
+
+let s = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${start}`);
+let sData = await s.json();
+
+let e = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${end}`);
+let eData = await e.json();
+
+if(sData.length == 0 || eData.length == 0){
+alert("Location not found");
+return;
+}
+
+let route = await fetch(
+`https://router.project-osrm.org/route/v1/driving/${sData[0].lon},${sData[0].lat};${eData[0].lon},${eData[0].lat}?overview=full&geometries=geojson`
+);
+
+let data = await route.json();
+
+if(routeLayer){
+map.removeLayer(routeLayer);
+}
+
+routeLayer = L.geoJSON(data.routes[0].geometry, {
+style: { color: "blue", weight: 5 }
+}).addTo(map);
+
+map.fitBounds(routeLayer.getBounds());
+
+}
+
+</script>
+
+</body>
+
+</html>
