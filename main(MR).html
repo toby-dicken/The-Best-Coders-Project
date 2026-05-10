@@ -4,35 +4,211 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WLV Home</title>
-<link rel="stylesheet" href="style.css">
+
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 <style>
 
-/* FLEX CONTAINER FOR CONTENT + IMAGE */
+/* BODY */
+body{
+  margin:0;
+  font-family:'Segoe UI', sans-serif;
+  background:linear-gradient(-45deg,#00c6ff,#0072ff,#ff758c,#ff7eb3);
+  background-size:400% 400%;
+  animation:gradientMove 12s ease infinite;
+  color:#333;
+}
+
+@keyframes gradientMove{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+
+/* HERO */
+.hero{
+  position:relative;
+  width:100%;
+  height:320px;
+  overflow:hidden;
+}
+
+.hero img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+
+.hero-overlay{
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:linear-gradient(
+    90deg,
+    rgba(0,0,0,0.65),
+    rgba(0,0,0,0.3),
+    rgba(0,0,0,0.65)
+  );
+}
+
+.hero-content{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  text-align:center;
+  color:white;
+  width:100%;
+}
+
+.hero-content .logo{
+  font-size:30px;
+  font-weight:bold;
+  letter-spacing:4px;
+}
+
+.hero-content h1{
+  margin:10px 0 0;
+  font-size:34px;
+}
+
+.hero-content p{
+  margin-top:8px;
+  font-size:16px;
+  opacity:0.9;
+}
+
+/* NAVBAR */
+.navbar{
+  position:sticky;
+  top:0;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:12px 20px;
+  background:rgba(0,0,0,0.85);
+  color:white;
+  flex-wrap:wrap;
+  z-index:10;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  text-decoration:none;
+  color:white;
+  font-weight:bold;
+  font-size:18px;
+}
+
+.logo-img{
+  width:40px;
+  height:40px;
+  object-fit:cover;
+  border-radius:10px;
+  transition:0.3s;
+}
+
+.brand:hover .logo-img{
+  transform:scale(1.1) rotate(3deg);
+  box-shadow:0 0 12px rgba(0,198,255,0.8);
+}
+
+.brand:hover{
+  color:#00c6ff;
+}
+
+.nav-links{
+  display:flex;
+  gap:15px;
+  flex-wrap:wrap;
+}
+
+.nav-links a{
+  color:white;
+  text-decoration:none;
+  transition:0.3s;
+}
+
+.nav-links a:hover{
+  color:#00c6ff;
+}
+
+#searchInput{
+  padding:7px;
+  border-radius:6px;
+  border:none;
+  outline:none;
+}
+
+select{
+  padding:5px;
+  border-radius:6px;
+}
+
+/* CONTENT */
 .content-wrapper{
-display:flex;
-flex-wrap:wrap;
-gap:20px;
-align-items:flex-start;
-padding:20px;
+  padding:20px;
 }
 
-/* MAIN CONTENT */
-.main-content{
-flex:1;
-min-width:300px;
+/* CARDS */
+.cards{
+  display:flex;
+  overflow-x:auto;
+  gap:20px;
+  padding-bottom:10px;
 }
 
-/* SIDE IMAGE */
-.side-image{
-flex:0 0 300px;
+.card{
+  min-width:220px;
+  background:white;
+  padding:20px;
+  border-radius:12px;
+  box-shadow:0 5px 15px rgba(0,0,0,0.1);
+  cursor:pointer;
+  opacity:0;
+  transform:translateY(20px);
+  transition:0.4s;
+  flex:0 0 auto;
 }
 
-.side-image img{
-max-width:100%;
-height:auto;
-display:block;
-border-radius:8px;
+.card.show{
+  opacity:1;
+  transform:translateY(0);
+}
+
+.card:hover{
+  transform:translateY(-8px);
+}
+
+.card img{
+  width:100%;
+  border-radius:10px;
+  margin-bottom:10px;
+}
+
+/* FLOATING WOLVES IMAGE */
+.wolves-floating {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 55px;
+  z-index: 1000;
+  transition: 0.3s;
+}
+
+.wolves-floating img {
+  width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.wolves-floating:hover {
+  transform: scale(1.1);
 }
 
 </style>
@@ -40,252 +216,165 @@ border-radius:8px;
 
 <body>
 
-<!-- LANGUAGE SELECT -->
-<div style="text-align:right; padding:10px;">
-<label for="languageSelect">Select Language</label>
+<!-- HERO -->
+<div class="hero">
+  <img src="University-of-Wolverhampton.png" alt="University Banner">
+  <div class="hero-overlay"></div>
 
-<select id="languageSelect" onchange="setLanguage(this.value)">
-<option value="en">English</option>
-<option value="es">Spanish</option>
-<option value="fr">French</option>
-<option value="de">German</option>
-<option value="zh">Chinese</option>
-<option value="ar">Arabic</option>
-<option value="ne">Nepali</option>
-</select>
-
+  <div class="hero-content">
+    <div class="logo">WLV</div>
+    <h1>University of Wolverhampton</h1>
+    <p>Welcome to your digital campus experience</p>
+  </div>
 </div>
 
+<!-- LANGUAGE -->
+<div style="text-align:right;padding:10px;">
+<select id="languageSelect" onchange="setLanguage(this.value)">
+  <option value="en">English</option>
+  <option value="de">Deutsch</option>
+  <option value="fr">Français</option>
+  <option value="hi">Hindi</option>
+  <option value="ne">Nepali</option>
+  <option value="ur">Urdu</option>
+</select>
+</div>
 
-<!-- NAVIGATION -->
+<!-- NAVBAR -->
 <nav class="navbar">
 
-<div class="logo">WLV</div>
+<a href="#" class="brand">
+  <img src="University-of-Wolverhampton.png" class="logo-img" alt="Logo">
+  <span>WLV</span>
+</a>
 
 <div class="nav-links">
-<a href="main(MR).html" id="navHome">Home</a>
-<a href="courses(MR).html" id="navCourses">Courses</a>
-<a href="students(MR).html" id="navStudents">Students</a>
-<a href="clubs(MR).html" id="navClubs">Clubs</a>
-<a href="support(MR).html" id="navSupport">Support</a>
+  <a href="#">Home</a>
+  <a href="#">Courses</a>
+  <a href="#">Students</a>
+  <a href="#">Events</a>
+  <a href="#">Support</a>
 </div>
 
-<form class="search-box">
-<input type="text" id="searchInput" placeholder="Search...">
-<button type="submit" id="searchBtn">Search</button>
-</form>
+<input type="text" id="searchInput" placeholder="Search..." onkeyup="searchCards()">
 
 </nav>
 
-
-<!-- FLEX WRAPPER -->
 <div class="content-wrapper">
 
+<h1 id="welcome"></h1>
+<p id="subtitle"></p>
 
-<!-- MAIN CONTENT -->
-<div class="main-content">
-
-<!-- HERO -->
-<section class="hero">
-
-<h1 id="welcome">Welcome to WLV Web Page</h1>
-
-<p id="subtitle">
-Explore courses, campus clubs, and student services.
-</p>
-
-</section>
-
-
-<!-- SERVICES -->
-<section class="section">
-
-<h2 id="servicesTitle">Our Services</h2>
+<h2 id="servicesTitle"></h2>
 
 <div class="cards">
 
-<a href="courses(MR).html" class="card-link">
+<div class="card" onclick="location.href='courses(aarimrana).html'">
+<i class="material-icons">menu_book</i>
+<h3 id="courseTitle"></h3>
+<p id="courseDesc"></p>
+</div>
+
+<div class="card" onclick="location.href='students(MR).html'">
+<i class="material-icons">people</i>
+<h3 id="studentTitle"></h3>
+<p id="studentDesc"></p>
+</div>
+
+<div class="card" onclick="location.href='library(MR).html'">
+<i class="material-icons">library_books</i>
+<h3 id="libraryTitle"></h3>
+<p id="libraryDesc"></p>
+</div>
+
+<!-- ✅ NEW WOLVES CARD -->
 <div class="card">
-<h3 id="courseTitle">Courses</h3>
-<p id="courseDesc">High quality academic courses.</p>
-</div>
-</a>
-
-
-<a href="students(MR).html" class="card-link">
-<div class="card">
-<h3 id="studentTitle">Students</h3>
-<p id="studentDesc">Student dashboard & profiles.</p>
-</div>
-</a>
-
-
-<a href="library(MR).html" class="card-link">
-<div class="card">
-<h3 id="libraryTitle">Library</h3>
-<p id="libraryDesc">Digital resources & materials.</p>
-</div>
-</a>
-
-
-<!-- NEW CLUBS CARD -->
-<a href="clubs(MR).html" class="card-link">
-<div class="card">
-<h3 id="clubsTitle">Campus Clubs</h3>
-<p id="clubsDesc">Join clubs and student societies.</p>
-</div>
-</a>
-
-
-<a href="support(MR).html" class="card-link">
-<div class="card">
-<h3 id="supportTitle">Support</h3>
-<p id="supportDesc">24/7 help & assistance.</p>
-</div>
-</a>
-
+<img src="wolves.png" alt="Wolves">
+<i class="material-icons">pets</i>
+<h3>Wolves</h3>
+<p>University Wolves Team</p>
 </div>
 
-</section>
-
+<div class="card" onclick="location.href='events(TD).html'">
+<i class="material-icons">sports_soccer</i>
+<h3 id="clubsTitle"></h3>
+<p id="clubsDesc"></p>
 </div>
 
-
-<!-- SIDE IMAGE -->
-<div class="side-image">
-
-<img src="https://pxl-wlvacuk.terminalfour.net/fit-in/1500x10000/filters:quality(95)/prod01/wlvacuk/media/departments/digital-content-and-communications/images-2024/City-courtyard.jpg" 
-alt="University of Wolverhampton Building">
-
+<div class="card" onclick="location.href='support(MR).html'">
+<i class="material-icons">support_agent</i>
+<h3 id="supportTitle"></h3>
+<p id="supportDesc"></p>
 </div>
 
 </div>
+</div>
 
-
-<!-- FOOTER -->
-<footer>
-
-<p id="footerText">
-© 2026 WLV Web Page | All Rights Reserved
-</p>
-
-</footer>
-
+<!-- FLOATING IMAGE -->
+<div class="wolves-floating">
+  <img src="wolves.png" alt="Wolves">
+</div>
 
 <script>
 
-
-const translations={
-
+const translations = {
 en:{
-navHome:"Home",
-navCourses:"Courses",
-navStudents:"Students",
-navClubs:"Clubs",
-navSupport:"Support",
-
-searchInput:"Search...",
-searchBtn:"Search",
-
-welcome:"Welcome to WLV Web Page",
-subtitle:"Explore courses, campus clubs, and student services.",
-
-servicesTitle:"Our Services",
-
-courseTitle:"Courses",
-courseDesc:"High quality academic courses.",
-
-studentTitle:"Students",
-studentDesc:"Student dashboard & profiles.",
-
-libraryTitle:"Library",
-libraryDesc:"Digital resources & materials.",
-
-clubsTitle:"Campus Clubs",
-clubsDesc:"Join clubs and student societies.",
-
-supportTitle:"Support",
-supportDesc:"24/7 help & assistance.",
-
-footerText:"© 2026 WLV Web Page | All Rights Reserved"
-},
-
-
-ne:{
-navHome:"घर",
-navCourses:"पाठ्यक्रम",
-navStudents:"विद्यार्थी",
-navClubs:"क्लबहरू",
-navSupport:"समर्थन",
-
-searchInput:"खोज्नुहोस्...",
-searchBtn:"खोज्नुहोस्",
-
-welcome:"WLV वेब पृष्ठमा स्वागत छ",
-subtitle:"पाठ्यक्रम, क्याम्पस क्लब र सेवाहरू अन्वेषण गर्नुहोस्।",
-
-servicesTitle:"हाम्रा सेवाहरू",
-
-courseTitle:"पाठ्यक्रम",
-courseDesc:"उच्च गुणस्तरको शैक्षिक पाठ्यक्रम।",
-
-studentTitle:"विद्यार्थी",
-studentDesc:"विद्यार्थी ड्यासबोर्ड र प्रोफाइल।",
-
-libraryTitle:"पुस्तकालय",
-libraryDesc:"डिजिटल स्रोतहरू र सामग्री।",
-
-clubsTitle:"क्याम्पस क्लबहरू",
-clubsDesc:"विद्यार्थी क्लबहरूमा सहभागी हुनुहोस्।",
-
-supportTitle:"समर्थन",
-supportDesc:"२४/७ सहायता र सहयोग।",
-
-footerText:"© 2026 WLV वेब पृष्ठ | सबै अधिकार सुरक्षित"
+welcome:"Welcome to WLV",
+subtitle:"Explore services",
+servicesTitle:"Services",
+courseTitle:"Courses",courseDesc:"Academic courses",
+studentTitle:"Students",studentDesc:"Profiles",
+libraryTitle:"Library",libraryDesc:"Digital resources",
+clubsTitle:"Events",clubsDesc:"Join events",
+supportTitle:"Support",supportDesc:"24/7 help",
+searchInput:"Search..."
 }
-
 };
 
+function applyLanguage(lang){
+  const t = translations[lang] || translations.en;
 
-function translatePage(lang){
+  document.getElementById("welcome").innerText = t.welcome;
+  document.getElementById("subtitle").innerText = t.subtitle;
+  document.getElementById("servicesTitle").innerText = t.servicesTitle;
 
-document.documentElement.lang=lang;
+  document.getElementById("courseTitle").innerText = t.courseTitle;
+  document.getElementById("courseDesc").innerText = t.courseDesc;
 
-document.body.dir=(lang==="ar")?"rtl":"ltr";
+  document.getElementById("studentTitle").innerText = t.studentTitle;
+  document.getElementById("studentDesc").innerText = t.studentDesc;
 
-const t=translations[lang];
+  document.getElementById("libraryTitle").innerText = t.libraryTitle;
+  document.getElementById("libraryDesc").innerText = t.libraryDesc;
 
-for(let id in t){
+  document.getElementById("clubsTitle").innerText = t.clubsTitle;
+  document.getElementById("clubsDesc").innerText = t.clubsDesc;
 
-const el=document.getElementById(id);
+  document.getElementById("supportTitle").innerText = t.supportTitle;
+  document.getElementById("supportDesc").innerText = t.supportDesc;
 
-if(el) el.innerHTML=t[id];
-
-if(id==="searchInput" && el) el.placeholder=t[id];
-
+  document.getElementById("searchInput").placeholder = t.searchInput;
 }
-
-}
-
 
 function setLanguage(lang){
-
-localStorage.setItem("selectedLanguage",lang);
-
-translatePage(lang);
-
+  applyLanguage(lang);
 }
 
+function searchCards(){
+  let input = document.getElementById("searchInput").value.toLowerCase();
 
-window.onload=function(){
-
-const savedLang=localStorage.getItem("selectedLanguage") || "en";
-
-document.getElementById("languageSelect").value=savedLang;
-
-translatePage(savedLang);
-
+  document.querySelectorAll(".card").forEach(card=>{
+    card.hidden = !card.innerText.toLowerCase().includes(input);
+  });
 }
+
+window.onload = function(){
+  applyLanguage("en");
+
+  document.querySelectorAll(".card").forEach((c,i)=>{
+    setTimeout(()=>c.classList.add("show"), i*120);
+  });
+};
 
 </script>
 
