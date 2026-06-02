@@ -1,391 +1,354 @@
 <?php
-require_once __DIR__ . '/security/auth.php';
-require_login();
-
+session_start();
 include("db.php");
 
-$userID = (int)$_SESSION["UserID"];
+if (!isset($_SESSION["UserID"])) {
+    header("Location: login(NS).php");
+    exit;
+}
 
-/* -------------------------
-   GET USER INFORMATION
---------------------------*/
-$stmt = $mysqli->prepare("SELECT email, FirstName FROM Persons WHERE UserID = ?");
-$stmt->bind_param("i", $userID);
+$userID = $_SESSION["UserID"];
+
+/* USER */
+$stmt = $mysqli->prepare("SELECT email, FirstName, role FROM Persons WHERE UserID=?");
+$stmt->bind_param("i",$userID);
 $stmt->execute();
 $user = $stmt->get_result()->fetch_assoc();
-$stmt->close();
 
-/* -------------------------
-   DAILY CHECK-IN SYSTEM
---------------------------*/
-$checkinMessage = "";
-$points = 0;
-$lastCheck = null;
+/* ADMIN ROLE */
+$isAdmin = ($user["role"] == "admin");
 
-$stmt = $mysqli->prepare("SELECT points, last_checkin FROM rewards WHERE UserID = ?");
-$stmt->bind_param("i", $userID);
+/* VIEW MODE */
+if(!isset($_SESSION["view_mode"])){
+    $_SESSION["view_mode"] = $user["role"];
+}
+$viewMode = $_SESSION["view_mode"];
+
+/* REWARDS */
+$points=0; $lastCheck=null; $checkinMessage="";
+$stmt=$mysqli->prepare("SELECT points,last_checkin FROM rewards WHERE UserID=?");
+$stmt->bind_param("i",$userID);
 $stmt->execute();
-$result = $stmt->get_result();
+$res=$stmt->get_result();
 
-if ($result->num_rows == 0) {
-    $stmt->close();
-    $stmt = $mysqli->prepare("INSERT INTO rewards(UserID, points, last_checkin) VALUES (?, 0, NULL)");
-    $stmt->bind_param("i", $userID);
+if($res->num_rows==0){
+    $mysqli->query("INSERT INTO rewards(UserID,points) VALUES ($userID,0)");
+}else{
+    $row=$res->fetch_assoc();
+    $points=$row["points"];
+    $lastCheck=$row["last_checkin"];
+}
+
+/* CHECKIN */
+if(isset($_POST["checkin"])){
+
+    $stmt=$mysqli->prepare("SELECT last_checkin FROM rewards WHERE UserID=?");
+    $stmt->bind_param("i",$userID);
     $stmt->execute();
-} else {
-    $data = $result->fetch_assoc();
-    $points = (int)$data["points"];
-    $lastCheck = $data["last_checkin"];
-}
-$stmt->close();
+    $row=$stmt->get_result()->fetch_assoc();
 
-if (isset($_POST["checkin"])) {
+    $now = time();
+    $last = $row["last_checkin"] ? strtotime($row["last_checkin"]) : 0;
 
-    // CSRF check
-    $token = $_POST["csrf_token"] ?? "";
-    if (!csrf_verify($token)) {
-        $checkinMessage = "Invalid request.";
-    } else {
-        $today = date("Y-m-d");
+    if(!$row["last_checkin"] || ($now - $last) >= 7200){
 
-        if ($lastCheck !== $today) {
-            $points += 10;
+        $currentTime = date("Y-m-d H:i:s");
 
-            $stmt = $mysqli->prepare("UPDATE rewards SET points = ?, last_checkin = ? WHERE UserID = ?");
-            $stmt->bind_param("isi", $points, $today, $userID);
-            $stmt->execute();
-            $stmt->close();
-
-            $lastCheck = $today;
-            $checkinMessage = "Check-in successful! +10 points";
-        } else {
-            $checkinMessage = "You already checked in today";
-        }
-    }
-}
-
-/* -------------------------
-   SEARCH SYSTEM
---------------------------*/
-$searchResults = null;
-$searchQuery = "";
-
-if (isset($_GET["search"])) {
-    $searchQuery = trim($_GET["search"]);
-    if ($searchQuery !== "") {
-        $keyword = "%" . $searchQuery . "%";
-        $stmt = $mysqli->prepare("SELECT CourseName, Description FROM Courses WHERE CourseName LIKE ?");
-        $stmt->bind_param("s", $keyword);
+        $stmt=$mysqli->prepare("UPDATE rewards SET points=points+10, last_checkin=? WHERE UserID=?");
+        $stmt->bind_param("si",$currentTime,$userID);
         $stmt->execute();
-        $searchResults = $stmt->get_result();
-        $stmt->close();
+
+        $points+=10;
+        $checkinMessage="✅ +10 points!";
+
+    } else {
+
+        $remaining = 7200 - ($now - $last);
+        $minutes = floor($remaining / 60);
+
+        $checkinMessage="⏳ Try again in $minutes minutes";
     }
 }
 
-/* -------------------------
-   TRANSLATION SYSTEM
---------------------------*/
-$translations = [
-    "en" => [
-        "selectLang" => "Select Language",
-        "navHome" => "Home",
-        "navCourses" => "Courses",
-        "navInbox" => "Inbox",
-        "navStudents" => "Students",
-        "navClubs" => "Clubs",
-        "navSupport" => "Support",
-        "navLogout" => "Logout",
-        "search_placeholder" => "Search...",
-        "search_btn" => "Search",
-        "welcome" => "Welcome to WLV Web Page",
-        "subtitle" => "Explore courses, campus clubs, and student services.",
-        "servicesTitle" => "Our Services",
-        "card_courses" => "Courses",
-        "card_courses_desc" => "High quality academic courses.",
-        "card_library" => "Library",
-        "card_library_desc" => "Digital resources & materials.",
-        "card_support" => "Support",
-        "card_support_desc" => "24/7 help & assistance",
-        "search_results" => "Search Results"
-    ],
-    "es" => [
-        "selectLang" => "Seleccionar idioma",
-        "navHome" => "Inicio",
-        "navCourses" => "Cursos",
-        "navInbox" => "Bandeja de entrada",
-        "navStudents" => "Estudiantes",
-        "navClubs" => "Clubes",
-        "navSupport" => "Soporte",
-        "navLogout" => "Cerrar sesión",
-        "search_placeholder" => "Buscar...",
-        "search_btn" => "Buscar",
-        "welcome" => "Bienvenido a la página WLV",
-        "subtitle" => "Explora cursos, clubes del campus y servicios estudiantiles.",
-        "servicesTitle" => "Nuestros Servicios",
-        "card_courses" => "Cursos",
-        "card_courses_desc" => "Cursos académicos de alta calidad.",
-        "card_library" => "Biblioteca",
-        "card_library_desc" => "Recursos y materiales digitales.",
-        "card_support" => "Soporte",
-        "card_support_desc" => "Ayuda y asistencia 24/7",
-        "search_results" => "Resultados de búsqueda"
-    ],
-    "fr" => [
-        "selectLang" => "Choisir la langue",
-        "navHome" => "Accueil",
-        "navCourses" => "Cours",
-        "navInbox" => "Boîte de réception",
-        "navStudents" => "Étudiants",
-        "navClubs" => "Clubs",
-        "navSupport" => "Support",
-        "navLogout" => "Déconnexion",
-        "search_placeholder" => "Rechercher...",
-        "search_btn" => "Rechercher",
-        "welcome" => "Bienvenue sur la page WLV",
-        "subtitle" => "Explorez les cours, clubs et services étudiants.",
-        "servicesTitle" => "Nos Services",
-        "card_courses" => "Cours",
-        "card_courses_desc" => "Cours académiques de haute qualité.",
-        "card_library" => "Bibliothèque",
-        "card_library_desc" => "Ressources numériques.",
-        "card_support" => "Support",
-        "card_support_desc" => "Aide et assistance 24h/24",
-        "search_results" => "Résultats de recherche"
-    ],
-    "de" => [
-        "selectLang" => "Sprache auswählen",
-        "navHome" => "Startseite",
-        "navCourses" => "Kurse",
-        "navInbox" => "Posteingang",
-        "navStudents" => "Studenten",
-        "navClubs" => "Clubs",
-        "navSupport" => "Support",
-        "navLogout" => "Abmelden",
-        "search_placeholder" => "Suchen...",
-        "search_btn" => "Suchen",
-        "welcome" => "Willkommen auf der WLV Webseite",
-        "subtitle" => "Entdecken Sie Kurse, Campus-Clubs und Studentendienste.",
-        "servicesTitle" => "Unsere Dienstleistungen",
-        "card_courses" => "Kurse",
-        "card_courses_desc" => "Hochwertige akademische Kurse.",
-        "card_library" => "Bibliothek",
-        "card_library_desc" => "Digitale Ressourcen & Materialien.",
-        "card_support" => "Support",
-        "card_support_desc" => "24/7 Hilfe & Unterstützung",
-        "search_results" => "Suchergebnisse"
-    ],
-    "zh" => [
-        "selectLang" => "选择语言",
-        "navHome" => "主页",
-        "navCourses" => "课程",
-        "navInbox" => "收件箱",
-        "navStudents" => "学生",
-        "navClubs" => "社团",
-        "navSupport" => "支持",
-        "navLogout" => "退出登录",
-        "search_placeholder" => "搜索...",
-        "search_btn" => "搜索",
-        "welcome" => "欢迎来到 WLV 网站",
-        "subtitle" => "探索课程、校园社团和学生服务。",
-        "servicesTitle" => "我们的服务",
-        "card_courses" => "课程",
-        "card_courses_desc" => "高质量学术课程。",
-        "card_library" => "图书馆",
-        "card_library_desc" => "数字资源 & 材料。",
-        "card_support" => "支持",
-        "card_support_desc" => "全天候帮助 & 支持",
-        "search_results" => "搜索结果"
-    ],
-    "ar" => [
-        "selectLang" => "اختر اللغة",
-        "navHome" => "الرئيسية",
-        "navCourses" => "الدورات",
-        "navInbox" => "صندوق الوارد",
-        "navStudents" => "الطلاب",
-        "navClubs" => "الأندية",
-        "navSupport" => "الدعم",
-        "navLogout" => "تسجيل الخروج",
-        "search_placeholder" => "بحث...",
-        "search_btn" => "بحث",
-        "welcome" => "مرحبًا بكم في صفحة WLV",
-        "subtitle" => "استكشف الدورات والأندية وخدمات الطلاب.",
-        "servicesTitle" => "خدماتنا",
-        "card_courses" => "الدورات",
-        "card_courses_desc" => "دورات أكاديمية عالية الجودة.",
-        "card_library" => "المكتبة",
-        "card_library_desc" => "الموارد الرقمية & المواد.",
-        "card_support" => "الدعم",
-        "card_support_desc" => "مساعدة & دعم 24/7",
-        "search_results" => "نتائج البحث"
-    ],
-    "ne" => [
-        "selectLang" => "भाषा चयन गर्नुहोस्",
-        "navHome" => "घर",
-        "navCourses" => "पाठ्यक्रम",
-        "navInbox" => "इनबक्स",
-        "navStudents" => "विद्यार्थी",
-        "navClubs" => "क्लबहरू",
-        "navSupport" => "समर्थन",
-        "navLogout" => "लगआउट",
-        "search_placeholder" => "खोज्नुहोस्...",
-        "search_btn" => "खोज्नुहोस्",
-        "welcome" => "WLV वेब पृष्ठमा स्वागत छ",
-        "subtitle" => "पाठ्यक्रम, क्याम्पस क्लब र सेवाहरू अन्वेषण गर्नुहोस्।",
-        "servicesTitle" => "हाम्रा सेवाहरू",
-        "card_courses" => "पाठ्यक्रम",
-        "card_courses_desc" => "उच्च गुणस्तरको शैक्षिक पाठ्यक्रम।",
-        "card_library" => "पुस्तकालय",
-        "card_library_desc" => "डिजिटल स्रोतहरू & सामग्रीहरू।",
-        "card_support" => "समर्थन",
-        "card_support_desc" => "२४/७ सहायता & समर्थन",
-        "search_results" => "खोज परिणामहरू"
-    ]
-];
-
-// Default language
-$lang = "en";
-if (isset($_GET["lang"]) && isset($translations[$_GET["lang"]])) {
-    $lang = $_GET["lang"];
+/* SEARCH */
+$searchResults=null;
+if(isset($_GET["search"])){
+    $k="%".$_GET["search"]."%";
+    $stmt=$mysqli->prepare("SELECT CourseName,Description FROM Courses WHERE CourseName LIKE ? OR Description LIKE ?");
+    $stmt->bind_param("ss",$k,$k);
+    $stmt->execute();
+    $searchResults=$stmt->get_result();
 }
 
-$t = $translations[$lang];
+/* ANNOUNCEMENTS */
+$announcements=$mysqli->query("SELECT * FROM announcements ORDER BY created_at DESC LIMIT 3");
+
+/* EVENTS */
+$events=$mysqli->query("SELECT * FROM events WHERE event_date>=NOW() ORDER BY event_date ASC LIMIT 3");
+
+/* POSTS */
+$posts=$mysqli->query("
+SELECT posts.*,Persons.FirstName 
+FROM posts JOIN Persons ON Persons.UserID=posts.userID 
+ORDER BY posts.created_at DESC LIMIT 5");
+
+/* POST */
+if(isset($_POST["post_content"])){
+    $content=$_POST["post_content"];
+    $stmt=$mysqli->prepare("INSERT INTO posts(userID,content) VALUES (?,?)");
+    $stmt->bind_param("is",$userID,$content);
+    $stmt->execute();
+    header("Refresh:0");
+}
+
+/* ANNOUNCEMENT */
+if(isset($_POST["add_announcement"])){
+
+    if(!$isAdmin || $viewMode!="admin"){
+        die("Access denied");
+    }
+
+    $title=$_POST["title"];
+    $content=$_POST["content"];
+
+    $stmt=$mysqli->prepare("INSERT INTO announcements(title,content) VALUES (?,?)");
+    $stmt->bind_param("ss",$title,$content);
+    $stmt->execute();
+
+    header("Refresh:0");
+}
+
+/* EVENT ADD */
+if(isset($_POST["add_event"])){
+
+    if(!$isAdmin || $viewMode!="admin"){
+        die("Access denied");
+    }
+
+    $title=$_POST["event_title"];
+    $date=$_POST["event_date"];
+    $content=$_POST["event_content"];
+
+    $stmt=$mysqli->prepare("INSERT INTO events(title,event_date,description) VALUES (?,?,?)");
+    $stmt->bind_param("sss",$title,$date,$content);
+    $stmt->execute();
+
+    header("Refresh:0");
+}
 ?>
+
 <!DOCTYPE html>
-<html lang="<?php echo htmlspecialchars($lang); ?>">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WLV Home</title>
-<link rel="stylesheet" href="main_style.css">
+<title>Campus Hub</title>
+
 <style>
-.content-wrapper {display:flex; flex-wrap:wrap; gap:20px; padding:20px; align-items:flex-start;}
-.main-content {flex:1; min-width:300px;}
-.header-section {display:flex; flex-wrap:wrap; gap:20px; align-items:center; margin:20px 0;}
-.header-text {flex:1;}
-.header-img {flex:0 0 300px;}
-.header-img img {max-width:100%; height:auto; border-radius:8px;}
-.services-grid {display:flex; flex-wrap:wrap; gap:20px;}
-.service-card {flex:1 1 200px; padding:20px; border-radius:8px; background:#f0f0f0; text-decoration:none; color:#000;}
-.checkin-box {margin-top:10px; padding:10px; background:#d4edda; color:#155724; border-radius:5px;}
-.result-card {border:1px solid #ddd; padding:10px; margin:10px 0; border-radius:5px;}
+body {
+margin:0;
+font-family:Segoe UI;
+background: linear-gradient(135deg,#4facfe,#00f2fe);
+color:white;
+}
+
+.navbar{
+display:flex;
+justify-content:space-between;
+padding:15px;
+background:rgba(0,0,0,0.6);
+}
+
+.nav-links a{color:white;margin:10px;text-decoration:none;}
+
+.hero{
+background:rgba(0,0,0,0.3);
+padding:25px;
+border-radius:15px;
+margin:20px;
+}
+
+.grid{display:flex;flex-wrap:wrap;gap:20px;padding:20px;}
+
+.card{
+background:rgba(255,255,255,0.15);
+padding:15px;
+border-radius:12px;
+flex:1 1 250px;
+}
+
+button{
+padding:10px;
+border:none;
+border-radius:8px;
+background:#00f2fe;
+cursor:pointer;
+}
+
+input,textarea{
+width:100%;
+padding:8px;
+margin:5px 0;
+}
+
+/* 🌙 DARK MODE (ADDED ONLY) */
+body.dark {
+    background: #111 !important;
+    color: #eee !important;
+}
+
+body.dark .card {
+    background: rgba(255,255,255,0.08) !important;
+}
+
+body.dark .navbar {
+    background: rgba(0,0,0,0.9) !important;
+}
+
+body.dark .hero {
+    background: rgba(255,255,255,0.08) !important;
+}
 </style>
 </head>
+
 <body>
 
-<!-- LANGUAGE SELECT -->
-<div style="text-align:right; padding:10px;">
-<select id="languageSelect" onchange="setLanguage(this.value)">
-<?php foreach($translations as $code=>$val){ ?>
-<option value="<?php echo htmlspecialchars($code); ?>" <?php if($code==$lang) echo "selected"; ?>>
-    <?php echo htmlspecialchars(strtoupper($code)); ?>
-</option>
-<?php } ?>
-</select>
-</div>
+<div class="navbar">
+<div>WLV | <?php echo $user["email"]; ?></div>
 
-<!-- NAVIGATION -->
-<nav class="navbar">
-<div class="logo">WLV | <?php echo htmlspecialchars($user["email"] ?? ""); ?></div>
 <div class="nav-links">
-    <a href="main(NS).php?lang=<?php echo htmlspecialchars($lang); ?>"><?php echo htmlspecialchars($t["navHome"]); ?></a>
-    <a href="courses(TD).php"><?php echo htmlspecialchars($t["navCourses"]); ?></a>
-    <a href="inbox.php">Inbox</a>
-    <a href="clubs(MR).html"><?php echo htmlspecialchars($t["navClubs"]); ?></a>
-    <a href="contact(NS).php"><?php echo htmlspecialchars($t["navSupport"]); ?></a>
-    <a href="logout(NS).php">Logout</a>
+<a href="main(NS).php">Home</a>
+<a href="courses(NS).php">Courses</a>
+<a href="inbox(NS).php">Mail</a>
+<a href="club(NS).php">Clubs</a>
 </div>
 
-<form class="search-box" method="GET" action="main(NS).php">
-    <input type="hidden" name="lang" value="<?php echo htmlspecialchars($lang); ?>">
-    <input type="text" name="search" value="<?php echo htmlspecialchars($searchQuery); ?>" placeholder="<?php echo htmlspecialchars($t["search_placeholder"]); ?>">
-    <button type="submit"><?php echo htmlspecialchars($t["search_btn"]); ?></button>
+<?php if($isAdmin){ ?>
+<a href="toggle_view(NS).php">
+<button>
+<?php echo ($viewMode=="admin") ? "Student View" : "Admin View"; ?>
+</button>
+</a>
+<?php } ?>
+
+<!-- 🌙 DARK MODE BUTTON (ADDED ONLY) -->
+<button onclick="toggleDark()" style="margin-left:10px;">🌙</button>
+<div><a href="logout(NS).php">Logout</a></div>
+</div>
+
+
+<!-- HERO -->
+<div class="hero">
+<h1>Welcome <?php echo $user["FirstName"]; ?> 👋</h1>
+
+<div id="clock"></div>
+
+<!-- SEARCH BAR -->
+<form method="GET" style="margin-top:15px;">
+<input type="text" name="search" placeholder="Search courses..." style="width:60%;padding:8px;">
+<button>Search</button>
 </form>
-</nav>
 
-<!-- PAGE CONTENT -->
-<div class="content-wrapper">
-<div class="main-content">
+<p>🔥 <?php echo $points; ?> Points</p>
 
-<section class="header-section">
-<div class="header-text">
-    <h1><?php echo htmlspecialchars($t["welcome"]); ?>, <?php echo htmlspecialchars($user["FirstName"] ?? ""); ?></h1>
-    <p><?php echo htmlspecialchars($t["subtitle"]); ?></p>
+<form method="POST">
+<button name="checkin">Daily Check-in</button>
+</form>
 
-    <section class="checkin-section">
-        <h2>Reward Points</h2>
-        <p><strong><?php echo (int)$points; ?> Points</strong></p>
-
-        <form method="POST" action="main(NS).php?lang=<?php echo htmlspecialchars($lang); ?>">
-            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrf_token()); ?>">
-            <button type="submit" name="checkin">Daily Check-In</button>
-        </form>
-
-        <?php if ($checkinMessage): ?>
-            <div class="checkin-box"><?php echo htmlspecialchars($checkinMessage); ?></div>
-        <?php endif; ?>
-    </section>
+<p><?php echo $checkinMessage; ?></p>
 </div>
 
-<div class="header-img">
-    <img src="https://pxl-wlvacuk.terminalfour.net/fit-in/1500x10000/prod01/wlvacuk/media/departments/digital-content-and-communications/images-2024/City-courtyard.jpg"
-         alt="University of Wolverhampton">
-</div>
-</section>
+<div class="grid">
 
-<!-- SERVICES GRID -->
-<section class="services">
-<h2><?php echo htmlspecialchars($t["servicesTitle"]); ?></h2>
+<!-- ANNOUNCEMENTS -->
+<div class="card">
+<h3>📢 Announcements</h3>
 
-<div class="services-grid">
-    <a href="courses(TD).php" class="service-card">
-        <h3><?php echo htmlspecialchars($t["card_courses"]); ?></h3>
-        <p><?php echo htmlspecialchars($t["card_courses_desc"]); ?></p>
-    </a>
+<?php if($isAdmin && $viewMode=="admin"){ ?>
+<form method="POST">
+<input name="title">
+<textarea name="content"></textarea>
+<button name="add_announcement">Post</button>
+</form>
+<hr>
+<?php } ?>
 
-    <a href="library(NS).php" class="service-card">
-        <h3><?php echo htmlspecialchars($t["card_library"]); ?></h3>
-        <p><?php echo htmlspecialchars($t["card_library_desc"]); ?></p>
-    </a>
-
-    <a href="contact(NS).php" class="service-card">
-        <h3><?php echo htmlspecialchars($t["card_support"]); ?></h3>
-        <p><?php echo htmlspecialchars($t["card_support_desc"]); ?></p>
-    </a>
-
-    <a href="events(TD).html" class="service-card">
-        <h3>Events</h3>
-        <p>Things going on in the future</p>
-    </a>
-</div>
-</section>
-
-<!-- SEARCH RESULTS -->
-<?php if ($searchResults && $searchResults->num_rows > 0): ?>
-<section class="search-results">
-<h2><?php echo htmlspecialchars($t["search_results"]); ?></h2>
-<?php while ($row = $searchResults->fetch_assoc()): ?>
-    <div class="result-card">
-        <h3><?php echo htmlspecialchars($row["CourseName"]); ?></h3>
-        <p><?php echo htmlspecialchars($row["Description"]); ?></p>
-    </div>
-<?php endwhile; ?>
-</section>
-<?php endif; ?>
-
-</div>
+<?php while($a=$announcements->fetch_assoc()){ ?>
+<p><b><?php echo $a["title"]; ?></b><br><?php echo $a["content"]; ?></p>
+<?php } ?>
 </div>
 
-<footer>
-<p>© 2026 WLV Web Page | All Rights Reserved</p>
-</footer>
+<!-- EVENTS -->
+<div class="card">
+<h3>📅 Events</h3>
+
+<?php if($isAdmin && $viewMode=="admin"){ ?>
+<form method="POST">
+<input name="event_title">
+<input type="date" name="event_date">
+<textarea name="event_content"></textarea>
+<button name="add_event">Add Event</button>
+</form>
+<hr>
+<?php } ?>
+
+<?php while($e=$events->fetch_assoc()){ ?>
+<p><b><?php echo $e["title"]; ?></b><br><?php echo $e["event_date"]; ?></p>
+<hr>
+<?php } ?>
+</div>
+
+<!-- COURSES -->
+<div class="card">
+<h3>📚 Courses</h3>
+<p>Access your enrolled courses and modules.</p>
+<a href="courses(NS).php"><button>Go to Courses</button></a>
+</div>
+
+<div class="card">
+
+<h3>🗺️ Campus Map</h3>
+
+<p>Find University of Wolverhampton locations, buildings, and routes.</p>
+
+<!-- MAP PREVIEW -->
+<div style="border-radius:10px; overflow:hidden; height:200px; margin-bottom:10px;">
+
+<iframe 
+src="map.html"
+style="width:100%; height:200px; border:0;">
+</iframe>
+
+</div>
+
+<a href="map.html">
+<button>Open Full Map</button>
+</a>
+
+</div>
+<!-- POSTS -->
+<div class="card">
+<h3>💬 Feed</h3>
+
+<form method="POST">
+<textarea name="post_content"></textarea>
+<button>Post</button>
+</form>
+
+<?php while($p=$posts->fetch_assoc()){ ?>
+<p><b><?php echo $p["FirstName"]; ?></b>: <?php echo $p["content"]; ?></p>
+<?php } ?>
+</div>
+
+</div>
 
 <script>
-function setLanguage(lang){
-    const params = new URLSearchParams(window.location.search);
-    params.set('lang', lang);
-    // keep search param if present
-    window.location.search = params.toString();
+function toggleDark(){
+    document.body.classList.toggle("dark");
 }
+
+setInterval(()=>{
+document.getElementById("clock").innerHTML=new Date().toLocaleTimeString();
+},1000);
 </script>
 
 </body>

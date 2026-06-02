@@ -1,102 +1,202 @@
 <?php
-require_once __DIR__ . '/security/session.php';
-secure_session_start();
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+session_start();
 include("db.php");
 
 $error = "";
 $success = "";
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    $token = $_POST["csrf_token"] ?? "";
-    if (!csrf_verify($token)) {
-        $error = "Invalid request.";
+    $FirstName = trim($_POST["FirstName"]);
+    $LastName = trim($_POST["LastName"]);
+    $email = trim($_POST["email"]);
+    $password = trim($_POST["password"]);
+    $Course = trim($_POST["Course"]);
+
+    if (!$FirstName || !$LastName || !$email || !$password || !$Course) {
+        $error = "Please fill all fields.";
     } else {
 
-        $FirstName = trim($_POST["FirstName"] ?? "");
-        $LastName  = trim($_POST["LastName"] ?? "");
-        $email     = trim($_POST["email"] ?? "");
-        $password  = trim($_POST["password"] ?? "");
+        // Check if email exists
+        $check = $mysqli->prepare("SELECT UserID FROM Persons WHERE email = ?");
+        $check->bind_param("s", $email);
+        $check->execute();
+        $result = $check->get_result();
 
-        if ($FirstName === "" || $LastName === "" || $email === "" || $password === "") {
-            $error = "Please fill all fields.";
-        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $error = "Please enter a valid email.";
-        } elseif (strlen($password) < 8) {
-            $error = "Password must be at least 8 characters.";
+        if ($result->num_rows > 0) {
+            $error = "Email already registered!";
         } else {
 
-            $check = $mysqli->prepare("SELECT UserID FROM Persons WHERE email = ?");
-            $check->bind_param("s", $email);
-            $check->execute();
-            $result = $check->get_result();
+            $hashed = password_hash($password, PASSWORD_DEFAULT);
 
-            if ($result->num_rows > 0) {
-                $error = "Email already registered!";
+            $stmt = $mysqli->prepare("INSERT INTO Persons (FirstName, LastName, email, password, Course) VALUES (?, ?, ?, ?, ?)");
+            $stmt->bind_param("sssss", $FirstName, $LastName, $email, $hashed, $Course);
+
+            if ($stmt->execute()) {
+                $success = "Registration successful! You can now login.";
             } else {
-                $hashed = password_hash($password, PASSWORD_DEFAULT);
-
-                $stmt = $mysqli->prepare("INSERT INTO Persons (FirstName, LastName, email, password) VALUES (?, ?, ?, ?)");
-                $stmt->bind_param("ssss", $FirstName, $LastName, $email, $hashed);
-
-                if ($stmt->execute()) {
-                    $success = "Registration successful! You can now login.";
-                } else {
-                    error_log("Registration DB error: " . $mysqli->error);
-                    $error = "Registration failed. Please try again.";
-                }
-
-                $stmt->close();
+                $error = "Error: " . $mysqli->error;
             }
-
-            $check->close();
         }
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Register</title>
+<title>Register</title>
+
+<style>
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    height: 100vh;
+    background: linear-gradient(135deg, #4b6cb7, #182848);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#form-container {
+    background: white;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    width: 350px;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+label {
+    font-size: 14px;
+    color: #555;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    transition: 0.3s;
+}
+
+input:focus,
+select:focus {
+    border-color: #4b6cb7;
+    outline: none;
+}
+
+input[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    background-color: #4b6cb7;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+input[type="submit"]:hover {
+    background-color: #182848;
+}
+
+.alert {
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.alert-danger {
+    background: #ffdddd;
+    color: #a70000;
+}
+
+.alert-success {
+    background: #ddffdd;
+    color: #007500;
+}
+
+p {
+    text-align: center;
+    margin-top: 15px;
+}
+
+a {
+    color: #4b6cb7;
+    text-decoration: none;
+}
+
+</style>
+
 </head>
 
 <body>
-<div>
-    <div>
-        <div>
-            <h2>Register</h2>
 
-            <?php if($error): ?>
-                <div class="alert alert-danger"><?php echo htmlspecialchars($error); ?></div>
-            <?php endif; ?>
+<div id="form-container">
 
-            <?php if($success): ?>
-                <div class="alert alert-success"><?php echo htmlspecialchars($success); ?></div>
-            <?php endif; ?>
+<h2>Register</h2>
 
-            <form method="post" action="Create_acc_page(NS).php" autocomplete="on">
-                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrf_token()); ?>">
+<?php if($error): ?>
+<div class="alert alert-danger"><?= $error ?></div>
+<?php endif; ?>
 
-                <label class="form-label">First Name</label>
-                <input type="text" name="FirstName" class="form-control mb-3" required>
+<?php if($success): ?>
+<div class="alert alert-success"><?= $success ?></div>
+<?php endif; ?>
 
-                <label class="form-label">Last Name</label>
-                <input type="text" name="LastName" class="form-control mb-3" required>
+<form method="post">
 
-                <label class="form-label">Email</label>
-                <input type="email" name="email" class="form-control mb-3" required>
+<label>First Name</label>
+<input type="text" name="FirstName" required>
 
-                <label class="form-label">Password</label>
-                <input type="password" name="password" class="form-control mb-3" required>
+<label>Last Name</label>
+<input type="text" name="LastName" required>
 
-                <button type="submit" class="btn btn-primary w-100">Register</button>
-            </form>
+<label>Email</label>
+<input type="email" name="email" required>
 
-            <p class="mt-3 text-center">
-                Already have an account? <a href="login(NS).php">Login</a>
-            </p>
-        </div>
-    </div>
+<label>Password</label>
+<input type="password" name="password" required>
+
+<label>Course</label>
+<select name="Course" required>
+<option value="">Select Course</option>
+<option value="Computer Science">Computer Science</option>
+<option value="Biology">Biology</option>
+<option value="Health Care">Health Care</option>
+</select>
+
+<input type="submit" value="Register">
+
+</form>
+
+<p>Already have an account? <a href="login(NS).php">Login</a></p>
+
 </div>
+
 </body>
 </html>
