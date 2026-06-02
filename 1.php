@@ -28,7 +28,7 @@ $points = 0;
 $lastCheck = null;
 $message = "";
 
-$stmt = $mysqli->prepare("SELECT points,last_checkin FROM rewards WHERE UserID=?");
+$stmt = $mysqli->prepare("SELECT points, last_checkin FROM rewards WHERE UserID=?");
 $stmt->bind_param("i", $userID);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -63,7 +63,7 @@ $searchResults = null;
 
 if (isset($_GET["search"])) {
     $keyword = "%" . $_GET["search"] . "%";
-    $stmt = $mysqli->prepare("SELECT CourseName,Description FROM Courses WHERE CourseName LIKE ?");
+    $stmt = $mysqli->prepare("SELECT CourseName, Description FROM Courses WHERE CourseName LIKE ?");
     $stmt->bind_param("s", $keyword);
     $stmt->execute();
     $searchResults = $stmt->get_result();
